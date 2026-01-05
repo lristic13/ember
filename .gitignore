@@ -1,0 +1,68 @@
+# Dart/Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+pubspec.lock    # Optional - some prefer to commit this
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# macOS
+.DS_Store
+*.dmg
+
+# iOS
+ios/.symlinks/
+ios/Pods/
+ios/Podfile.lock
+ios/.generated/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/engine
+ios/Flutter/flutter_assets/
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Android
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/
+android/local.properties
+android/**/GeneratedPluginRegistrant.*
+*.apk
+*.aab
+
+# Generated
+*.g.dart
+*.freezed.dart
+*.gr.dart
+*.mocks.dart
+*.config.dart
+coverage/
+doc/api/
+
+# Secrets (if any)
+*.env
+*.env.*
+secrets.dart
+
+# Misc
+*.log
+*.pyc
+*.class
+
+EMBER_INSTRUCTIONS.md
