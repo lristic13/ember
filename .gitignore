@@ -14,7 +14,6 @@ pubspec.lock    # Optional - some prefer to commit this
 .vscode/
 *.swp
 *.swo
-.cursor/
 
 # macOS
 .DS_Store
