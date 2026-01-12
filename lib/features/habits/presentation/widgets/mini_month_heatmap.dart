@@ -164,27 +164,31 @@ class MiniMonthHeatmap extends StatelessWidget {
     final intensity = _getIntensityForDate(date);
     final colors = gradient.getColorsForIntensity(intensity);
     final isToday = date_utils.DateUtils.isSameDay(date, today);
+    final isFuture = date_utils.DateUtils.isFuture(date);
 
     return GestureDetector(
-      onTap: onCellTap != null ? () => onCellTap!(date, value) : null,
-      child: Container(
-        width: cellSize,
-        height: cellSize,
-        decoration: BoxDecoration(
-          color: colors.cellColor,
-          borderRadius: BorderRadius.circular(AppDimensions.miniMonthCellRadius),
-          border: isToday
-              ? Border.all(color: gradient.primaryColor, width: 1)
-              : null,
-          boxShadow: colors.glowColor != null
-              ? [
-                  BoxShadow(
-                    color: colors.glowColor!.withValues(alpha: 0.4),
-                    blurRadius: 3,
-                    spreadRadius: 0,
-                  ),
-                ]
-              : null,
+      onTap: isFuture ? null : (onCellTap != null ? () => onCellTap!(date, value) : null),
+      child: Opacity(
+        opacity: isFuture ? 0.3 : 1.0,
+        child: Container(
+          width: cellSize,
+          height: cellSize,
+          decoration: BoxDecoration(
+            color: colors.cellColor,
+            borderRadius: BorderRadius.circular(AppDimensions.miniMonthCellRadius),
+            border: isToday
+                ? Border.all(color: gradient.primaryColor, width: 1)
+                : null,
+            boxShadow: colors.glowColor != null
+                ? [
+                    BoxShadow(
+                      color: colors.glowColor!.withValues(alpha: 0.4),
+                      blurRadius: 3,
+                      spreadRadius: 0,
+                    ),
+                  ]
+                : null,
+          ),
         ),
       ),
     );

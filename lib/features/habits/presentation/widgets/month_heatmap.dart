@@ -182,10 +182,13 @@ class _MonthHeatmapState extends ConsumerState<MonthHeatmap> {
                     ) ??
                     0.0;
 
+                final isFuture = date_utils.DateUtils.isFuture(date);
+
                 return MonthHeatmapCell(
                   dayNumber: date.day,
                   intensity: intensity,
                   isToday: isToday,
+                  isFuture: isFuture,
                   gradient: widget.gradient,
                   onTap: widget.onCellTap != null
                       ? () => widget.onCellTap!(date, value)

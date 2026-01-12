@@ -55,6 +55,9 @@ class _EntryEditorBottomSheetState
     if (date_utils.DateUtils.isToday(date)) {
       return AppStrings.today;
     }
+    if (date_utils.DateUtils.isYesterday(date)) {
+      return AppStrings.yesterday;
+    }
     return DateFormat.MMMEd().format(date);
   }
 
