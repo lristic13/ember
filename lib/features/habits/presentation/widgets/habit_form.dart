@@ -17,7 +17,8 @@ class HabitForm extends StatefulWidget {
     String unit,
     String? emoji,
     String gradientId,
-  ) onSubmit;
+  )
+  onSubmit;
 
   const HabitForm({
     super.key,
@@ -68,8 +69,8 @@ class _HabitFormState extends State<HabitForm> {
           TextFormField(
             controller: _nameController,
             decoration: const InputDecoration(
-              labelText: AppStrings.habitName,
-              hintText: AppStrings.habitNameHint,
+              labelText: AppStrings.activityName,
+              hintText: AppStrings.activityNameHint,
             ),
             textCapitalization: TextCapitalization.sentences,
             validator: (value) {
@@ -83,8 +84,8 @@ class _HabitFormState extends State<HabitForm> {
           TextFormField(
             controller: _unitController,
             decoration: const InputDecoration(
-              labelText: AppStrings.habitUnit,
-              hintText: AppStrings.habitUnitHint,
+              labelText: AppStrings.activityUnit,
+              hintText: AppStrings.activityUnitHint,
             ),
             textCapitalization: TextCapitalization.none,
             validator: (value) {

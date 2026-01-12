@@ -16,7 +16,7 @@ class CreateHabitScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.createHabit),
+        title: const Text(AppStrings.createActivity),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),

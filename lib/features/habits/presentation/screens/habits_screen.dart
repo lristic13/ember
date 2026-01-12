@@ -1,3 +1,4 @@
+import 'package:ember/core/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +26,7 @@ class HabitsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.appName),
+        title: Text(AppStrings.appName, style: AppTextStyles.headlineLarge),
         actions: [
           IconButton(
             icon: Icon(

@@ -22,13 +22,10 @@ class HabitsEmptyState extends StatelessWidget {
               color: AppColors.emberMedium,
             ),
             const SizedBox(height: AppDimensions.marginMd),
-            Text(
-              AppStrings.noHabits,
-              style: AppTextStyles.headlineMedium,
-            ),
+            Text(AppStrings.noActivities, style: AppTextStyles.headlineMedium),
             const SizedBox(height: AppDimensions.marginSm),
             Text(
-              AppStrings.noHabitsSubtitle,
+              AppStrings.noActivitiesSubtitle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),

@@ -12,10 +12,7 @@ import '../widgets/delete_habit_dialog.dart';
 class EditHabitScreen extends ConsumerWidget {
   final String habitId;
 
-  const EditHabitScreen({
-    super.key,
-    required this.habitId,
-  });
+  const EditHabitScreen({super.key, required this.habitId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +20,7 @@ class EditHabitScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.editHabit),
+        title: const Text(AppStrings.editActivity),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -42,9 +39,7 @@ class EditHabitScreen extends ConsumerWidget {
           child: habitAsync.when(
             data: (habit) {
               if (habit == null) {
-                return const Center(
-                  child: Text('Habit not found'),
-                );
+                return const Center(child: Text('Habit not found'));
               }
 
               return HabitForm(
@@ -71,12 +66,8 @@ class EditHabitScreen extends ConsumerWidget {
                 },
               );
             },
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            error: (error, stack) => Center(
-              child: Text('Error: $error'),
-            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(child: Text('Error: $error')),
           ),
         ),
       ),

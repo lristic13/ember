@@ -45,10 +45,7 @@ class MonthHeatmapCell extends StatelessWidget {
             AppDimensions.monthHeatMapCellRadius,
           ),
           border: isToday
-              ? Border.all(
-                  color: gradient.primaryColor,
-                  width: 2,
-                )
+              ? Border.all(color: gradient.primaryColor, width: 2)
               : null,
           boxShadow: colors.glowColor != null
               ? [

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
 abstract class AppTextStyles {
-  static const String _fontFamily = 'SF Pro Display';
+  static final String _fontFamily = GoogleFonts.lato().fontFamily!;
 
   // Display
-  static const TextStyle displayLarge = TextStyle(
+  static TextStyle displayLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 32,
     fontWeight: FontWeight.bold,
@@ -14,7 +15,7 @@ abstract class AppTextStyles {
     letterSpacing: -0.5,
   );
 
-  static const TextStyle displayMedium = TextStyle(
+  static TextStyle displayMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 28,
     fontWeight: FontWeight.bold,
@@ -22,7 +23,7 @@ abstract class AppTextStyles {
     letterSpacing: -0.5,
   );
 
-  static const TextStyle displaySmall = TextStyle(
+  static TextStyle displaySmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 24,
     fontWeight: FontWeight.bold,
@@ -30,21 +31,21 @@ abstract class AppTextStyles {
   );
 
   // Headline
-  static const TextStyle headlineLarge = TextStyle(
+  static TextStyle headlineLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 22,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle headlineMedium = TextStyle(
+  static TextStyle headlineMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle headlineSmall = TextStyle(
+  static TextStyle headlineSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 18,
     fontWeight: FontWeight.w600,
@@ -52,21 +53,21 @@ abstract class AppTextStyles {
   );
 
   // Title
-  static const TextStyle titleLarge = TextStyle(
+  static TextStyle titleLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle titleMedium = TextStyle(
+  static TextStyle titleMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle titleSmall = TextStyle(
+  static TextStyle titleSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w600,
@@ -74,21 +75,21 @@ abstract class AppTextStyles {
   );
 
   // Body
-  static const TextStyle bodyLarge = TextStyle(
+  static TextStyle bodyLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static TextStyle bodyMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle bodySmall = TextStyle(
+  static TextStyle bodySmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.normal,
@@ -96,7 +97,7 @@ abstract class AppTextStyles {
   );
 
   // Label
-  static const TextStyle labelLarge = TextStyle(
+  static TextStyle labelLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w500,
@@ -104,7 +105,7 @@ abstract class AppTextStyles {
     letterSpacing: 0.1,
   );
 
-  static const TextStyle labelMedium = TextStyle(
+  static TextStyle labelMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w500,
@@ -112,7 +113,7 @@ abstract class AppTextStyles {
     letterSpacing: 0.1,
   );
 
-  static const TextStyle labelSmall = TextStyle(
+  static TextStyle labelSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 10,
     fontWeight: FontWeight.w500,
@@ -121,7 +122,7 @@ abstract class AppTextStyles {
   );
 
   // Button
-  static const TextStyle button = TextStyle(
+  static TextStyle button = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w600,

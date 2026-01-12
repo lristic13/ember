@@ -9,16 +9,16 @@ abstract class AppStrings {
   static const String habits = 'Habits';
 
   // Habits
-  static const String createHabit = 'Create Habit';
-  static const String editHabit = 'Edit Habit';
-  static const String deleteHabit = 'Delete Habit';
-  static const String habitName = 'Habit Name';
-  static const String habitUnit = 'Unit';
-  static const String noHabits = 'No habits yet';
-  static const String noHabitsSubtitle =
-      'Create your first habit to start tracking';
-  static const String habitNameHint = 'e.g., Drink water';
-  static const String habitUnitHint = 'e.g., glasses';
+  static const String createActivity = 'Create Activity';
+  static const String editActivity = 'Edit Activity';
+  static const String deleteActivity = 'Delete Activity';
+  static const String activityName = 'Activity Name';
+  static const String activityUnit = 'Unit';
+  static const String noActivities = 'No activities yet';
+  static const String noActivitiesSubtitle =
+      'Create your first activity to start tracking';
+  static const String activityNameHint = 'e.g., Drink water';
+  static const String activityUnitHint = 'e.g., glasses';
 
   // Actions
   static const String save = 'Save';
