@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:hive_ce/hive.dart';
 
 import '../../domain/entities/habit.dart';
@@ -24,13 +22,16 @@ class HabitModel extends HiveObject {
   final double? dailyGoal; // Keep for backward compatibility, no longer used
 
   @HiveField(5)
-  final int? colorValue;
+  final int? colorValue; // Keep for backward compatibility, no longer used
 
   @HiveField(6)
   final DateTime createdAt;
 
   @HiveField(7)
   final bool isArchived;
+
+  @HiveField(8)
+  final String? gradientId;
 
   HabitModel({
     required this.id,
@@ -41,6 +42,7 @@ class HabitModel extends HiveObject {
     this.colorValue,
     required this.createdAt,
     this.isArchived = false,
+    this.gradientId,
   });
 
   /// Creates a [HabitModel] from a [Habit] entity.
@@ -50,7 +52,7 @@ class HabitModel extends HiveObject {
       name: habit.name,
       emoji: habit.emoji,
       unit: habit.unit,
-      colorValue: habit.color?.toARGB32(),
+      gradientId: habit.gradientId,
       createdAt: habit.createdAt,
       isArchived: habit.isArchived,
     );
@@ -63,7 +65,7 @@ class HabitModel extends HiveObject {
       name: name,
       emoji: emoji,
       unit: unit,
-      color: colorValue != null ? Color(colorValue!) : null,
+      gradientId: gradientId ?? 'ember',
       createdAt: createdAt,
       isArchived: isArchived,
     );

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/constants/habit_gradients.dart';
 
 class HeatmapCell extends StatelessWidget {
   final DateTime date;
   final double intensity;
   final bool isToday;
+  final HabitGradient gradient;
   final VoidCallback? onTap;
 
   const HeatmapCell({
@@ -14,12 +15,13 @@ class HeatmapCell extends StatelessWidget {
     required this.date,
     required this.intensity,
     required this.isToday,
+    required this.gradient,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppColors.getEmberColorForIntensity(intensity);
+    final colors = gradient.getColorsForIntensity(intensity);
 
     return GestureDetector(
       onTap: onTap,
@@ -33,7 +35,7 @@ class HeatmapCell extends StatelessWidget {
           ),
           border: isToday
               ? Border.all(
-                  color: AppColors.accent,
+                  color: gradient.primaryColor,
                   width: AppDimensions.weekHeatMapTodayBorderWidth,
                 )
               : null,

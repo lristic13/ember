@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/app_text_styles.dart';
+import 'gradient_picker.dart';
 
 class HabitForm extends StatefulWidget {
   final String? initialName;
   final String? initialUnit;
   final String? initialEmoji;
+  final String initialGradientId;
   final String submitButtonText;
   final Future<void> Function(
     String name,
     String unit,
     String? emoji,
+    String gradientId,
   ) onSubmit;
 
   const HabitForm({
@@ -19,6 +24,7 @@ class HabitForm extends StatefulWidget {
     this.initialName,
     this.initialUnit,
     this.initialEmoji,
+    this.initialGradientId = 'ember',
     this.submitButtonText = 'Create',
     required this.onSubmit,
   });
@@ -32,6 +38,7 @@ class _HabitFormState extends State<HabitForm> {
   late final TextEditingController _nameController;
   late final TextEditingController _unitController;
   late final TextEditingController _emojiController;
+  late String _selectedGradientId;
   bool _isSubmitting = false;
 
   @override
@@ -40,6 +47,7 @@ class _HabitFormState extends State<HabitForm> {
     _nameController = TextEditingController(text: widget.initialName);
     _unitController = TextEditingController(text: widget.initialUnit);
     _emojiController = TextEditingController(text: widget.initialEmoji);
+    _selectedGradientId = widget.initialGradientId;
   }
 
   @override
@@ -86,8 +94,20 @@ class _HabitFormState extends State<HabitForm> {
               return null;
             },
           ),
-          const SizedBox(height: AppDimensions.marginMd),
-
+          const SizedBox(height: AppDimensions.marginLg),
+          Text(
+            'Color',
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppDimensions.marginSm),
+          GradientPicker(
+            selectedGradientId: _selectedGradientId,
+            onGradientSelected: (gradientId) {
+              setState(() => _selectedGradientId = gradientId);
+            },
+          ),
           const Spacer(),
           ElevatedButton(
             onPressed: _isSubmitting ? null : _handleSubmit,
@@ -115,6 +135,7 @@ class _HabitFormState extends State<HabitForm> {
       _emojiController.text.trim().isEmpty
           ? null
           : _emojiController.text.trim(),
+      _selectedGradientId,
     );
 
     if (mounted) {

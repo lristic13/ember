@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/habit_gradients.dart';
 import '../viewmodels/intensity_viewmodel.dart';
 import 'heatmap_navigation.dart';
 import 'year_month_grid.dart';
@@ -12,12 +13,14 @@ class YearHeatmapContent extends ConsumerStatefulWidget {
   final String habitId;
   final String unit;
   final Map<DateTime, double> entriesByDate;
+  final HabitGradient gradient;
 
   const YearHeatmapContent({
     super.key,
     required this.habitId,
     required this.unit,
     required this.entriesByDate,
+    required this.gradient,
   });
 
   @override
@@ -89,6 +92,7 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               year: _selectedYear,
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: intensitiesByDate,
+              gradient: widget.gradient,
               onCellTap: (date, value) => _showTooltip(context, date, value),
             ),
             loading: () => const Center(
@@ -101,6 +105,7 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               year: _selectedYear,
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: const {},
+              gradient: widget.gradient,
               onCellTap: (date, value) => _showTooltip(context, date, value),
             ),
           ),

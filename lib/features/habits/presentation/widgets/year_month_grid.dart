@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/constants/habit_gradients.dart';
 import 'mini_month_heatmap.dart';
 
 class YearMonthGrid extends StatelessWidget {
   final int year;
   final Map<DateTime, double> entriesByDate;
   final Map<DateTime, double> intensitiesByDate;
+  final HabitGradient gradient;
   final void Function(DateTime date, double value)? onCellTap;
 
   const YearMonthGrid({
@@ -14,6 +16,7 @@ class YearMonthGrid extends StatelessWidget {
     required this.year,
     required this.entriesByDate,
     required this.intensitiesByDate,
+    required this.gradient,
     this.onCellTap,
   });
 
@@ -36,6 +39,7 @@ class YearMonthGrid extends StatelessWidget {
           monthLabel: _monthLabels[index],
           entriesByDate: entriesByDate,
           intensitiesByDate: intensitiesByDate,
+          gradient: gradient,
           onCellTap: onCellTap,
         );
       }),

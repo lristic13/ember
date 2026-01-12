@@ -6,11 +6,13 @@ import '../../../../core/constants/app_text_styles.dart';
 class HabitProgressIndicator extends StatelessWidget {
   final double currentValue;
   final String unit;
+  final Color color;
 
   const HabitProgressIndicator({
     super.key,
     required this.currentValue,
     required this.unit,
+    required this.color,
   });
 
   String _formatNumber(double value) {
@@ -27,7 +29,7 @@ class HabitProgressIndicator extends StatelessWidget {
     return Text(
       '${_formatNumber(currentValue)} $unit today',
       style: AppTextStyles.bodySmall.copyWith(
-        color: hasValue ? AppColors.accent : AppColors.textSecondary,
+        color: hasValue ? color : AppColors.textSecondary,
         fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
       ),
     );

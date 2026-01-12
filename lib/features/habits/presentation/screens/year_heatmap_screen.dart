@@ -33,6 +33,7 @@ class YearHeatmapScreen extends ConsumerWidget {
               habitId: habitId,
               unit: habit.unit,
               entriesByDate: entriesByDate,
+              gradient: habit.gradient,
             ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (_, __) => const Center(child: Text('Error loading data')),

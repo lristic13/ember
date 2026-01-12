@@ -5,10 +5,12 @@ import '../../../../core/constants/app_dimensions.dart';
 
 class QuickLogButton extends StatefulWidget {
   final VoidCallback onTap;
+  final Color color;
 
   const QuickLogButton({
     super.key,
     required this.onTap,
+    this.color = AppColors.accent,
   });
 
   @override
@@ -60,7 +62,7 @@ class _QuickLogButtonState extends State<QuickLogButton>
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: AppColors.accent,
+            color: widget.color,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
           ),
           alignment: Alignment.center,

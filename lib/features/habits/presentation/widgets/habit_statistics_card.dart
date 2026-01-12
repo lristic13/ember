@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../viewmodels/habit_statistics_state.dart';
@@ -8,11 +9,13 @@ import 'statistic_item.dart';
 class HabitStatisticsCard extends StatelessWidget {
   final HabitStatisticsState state;
   final String unit;
+  final Color accentColor;
 
   const HabitStatisticsCard({
     super.key,
     required this.state,
     required this.unit,
+    this.accentColor = AppColors.accent,
   });
 
   String _formatNumber(double value) {
@@ -51,6 +54,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.currentStreak,
                 value: _formatStreak(stats.currentStreak),
                 unit: _streakUnit(stats.currentStreak),
+                valueColor: accentColor,
               ),
             ),
             const SizedBox(width: AppDimensions.paddingSm),
@@ -59,6 +63,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.longestStreak,
                 value: _formatStreak(stats.longestStreak),
                 unit: _streakUnit(stats.longestStreak),
+                valueColor: accentColor,
               ),
             ),
           ],
@@ -71,6 +76,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.totalLogged,
                 value: _formatNumber(stats.totalLogged),
                 unit: unit,
+                valueColor: accentColor,
               ),
             ),
             const SizedBox(width: AppDimensions.paddingSm),
@@ -79,6 +85,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.dailyAverage,
                 value: _formatNumber(stats.dailyAverage),
                 unit: unit,
+                valueColor: accentColor,
               ),
             ),
           ],

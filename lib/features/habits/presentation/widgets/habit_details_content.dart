@@ -14,10 +14,7 @@ import 'view_year_button.dart';
 class HabitDetailsContent extends ConsumerWidget {
   final Habit habit;
 
-  const HabitDetailsContent({
-    super.key,
-    required this.habit,
-  });
+  const HabitDetailsContent({super.key, required this.habit});
 
   void _showTooltip(BuildContext context, DateTime date, double value) {
     final formattedDate = '${date.day}/${date.month}/${date.year}';
@@ -35,7 +32,9 @@ class HabitDetailsContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final statisticsState = ref.watch(habitStatisticsViewModelProvider(habit.id));
+    final statisticsState = ref.watch(
+      habitStatisticsViewModelProvider(habit.id),
+    );
     final entriesAsync = ref.watch(allHabitEntriesProvider(habit.id));
 
     return SingleChildScrollView(
@@ -48,12 +47,14 @@ class HabitDetailsContent extends ConsumerWidget {
           HabitStatisticsCard(
             state: statisticsState,
             unit: habit.unit,
+            accentColor: habit.gradient.primaryColor,
           ),
           const SizedBox(height: AppDimensions.paddingLg),
           entriesAsync.when(
             data: (entriesByDate) => MonthHeatmap(
               habitId: habit.id,
               entriesByDate: entriesByDate,
+              gradient: habit.gradient,
               onCellTap: (date, value) => _showTooltip(context, date, value),
             ),
             loading: () => const Center(
@@ -65,7 +66,7 @@ class HabitDetailsContent extends ConsumerWidget {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const SizedBox(height: AppDimensions.paddingMd),
-          ViewYearButton(habitId: habit.id),
+          ViewYearButton(habitId: habit.id, color: habit.gradient.primaryColor),
         ],
       ),
     );
