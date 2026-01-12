@@ -8,13 +8,13 @@ import 'statistic_item.dart';
 
 class HabitStatisticsCard extends StatelessWidget {
   final HabitStatisticsState state;
-  final String unit;
+  final String? unit;
   final Color accentColor;
 
   const HabitStatisticsCard({
     super.key,
     required this.state,
-    required this.unit,
+    this.unit,
     this.accentColor = AppColors.accent,
   });
 
@@ -75,7 +75,7 @@ class HabitStatisticsCard extends StatelessWidget {
               child: StatisticItem(
                 label: AppStrings.totalLogged,
                 value: _formatNumber(stats.totalLogged),
-                unit: unit,
+                unit: unit ?? '',
                 valueColor: accentColor,
               ),
             ),
@@ -84,7 +84,7 @@ class HabitStatisticsCard extends StatelessWidget {
               child: StatisticItem(
                 label: AppStrings.dailyAverage,
                 value: _formatNumber(stats.dailyAverage),
-                unit: unit,
+                unit: unit ?? '',
                 valueColor: accentColor,
               ),
             ),

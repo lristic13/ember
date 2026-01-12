@@ -44,13 +44,15 @@ class EditHabitScreen extends ConsumerWidget {
 
               return HabitForm(
                 initialName: habit.name,
+                initialTrackingType: habit.trackingType,
                 initialUnit: habit.unit,
                 initialEmoji: habit.emoji,
                 initialGradientId: habit.gradientId,
                 submitButtonText: AppStrings.save,
-                onSubmit: (name, unit, emoji, gradientId) async {
+                onSubmit: (name, trackingType, unit, emoji, gradientId) async {
                   final updatedHabit = habit.copyWith(
                     name: name,
+                    trackingType: trackingType,
                     unit: unit,
                     emoji: emoji,
                     gradientId: gradientId,

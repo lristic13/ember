@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/habit_gradients.dart';
+import '../../domain/entities/tracking_type.dart';
 import '../viewmodels/intensity_viewmodel.dart';
 import 'entry_editor_bottom_sheet.dart';
 import 'heatmap_navigation.dart';
@@ -11,7 +12,8 @@ import 'year_month_grid.dart';
 class YearHeatmapContent extends ConsumerStatefulWidget {
   final String habitId;
   final String habitName;
-  final String unit;
+  final TrackingType trackingType;
+  final String? unit;
   final Map<DateTime, double> entriesByDate;
   final HabitGradient gradient;
 
@@ -19,7 +21,8 @@ class YearHeatmapContent extends ConsumerStatefulWidget {
     super.key,
     required this.habitId,
     required this.habitName,
-    required this.unit,
+    required this.trackingType,
+    this.unit,
     required this.entriesByDate,
     required this.gradient,
   });
@@ -54,6 +57,7 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
       context: context,
       habitId: widget.habitId,
       habitName: widget.habitName,
+      trackingType: widget.trackingType,
       unit: widget.unit,
       date: date,
       currentValue: value,

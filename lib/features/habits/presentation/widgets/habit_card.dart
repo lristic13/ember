@@ -49,6 +49,7 @@ class HabitCard extends ConsumerWidget {
                         const SizedBox(height: AppDimensions.marginXs),
                         HabitProgressIndicator(
                           currentValue: todayValue,
+                          trackingType: habit.trackingType,
                           unit: habit.unit,
                           color: habit.gradient.primaryColor,
                         ),
@@ -56,8 +57,9 @@ class HabitCard extends ConsumerWidget {
                     ),
                   ),
                   QuickLogButton(
-                    onTap: () => _incrementToday(ref),
+                    onTap: () => _quickLog(context, ref, todayValue),
                     color: habit.gradient.primaryColor,
+                    icon: habit.isCompletion ? Icons.check : Icons.add,
                   ),
                 ],
               ),
@@ -83,8 +85,14 @@ class HabitCard extends ConsumerWidget {
     return 0;
   }
 
-  void _incrementToday(WidgetRef ref) {
-    ref.read(habitEntriesViewModelProvider(habit.id).notifier).incrementToday();
+  void _quickLog(BuildContext context, WidgetRef ref, double todayValue) {
+    if (habit.isCompletion) {
+      // For completion type: toggle on/off
+      ref.read(habitEntriesViewModelProvider(habit.id).notifier).toggleTodayCompletion();
+    } else {
+      // For quantity type: open entry editor to input exact value
+      _showEntryEditor(context, DateTime.now(), todayValue);
+    }
   }
 
   void _showEntryEditor(
@@ -96,6 +104,7 @@ class HabitCard extends ConsumerWidget {
       context: context,
       habitId: habit.id,
       habitName: habit.name,
+      trackingType: habit.trackingType,
       unit: habit.unit,
       date: date,
       currentValue: currentValue,

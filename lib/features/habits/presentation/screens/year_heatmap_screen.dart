@@ -32,6 +32,7 @@ class YearHeatmapScreen extends ConsumerWidget {
             data: (entriesByDate) => YearHeatmapContent(
               habitId: habitId,
               habitName: habit.name,
+              trackingType: habit.trackingType,
               unit: habit.unit,
               entriesByDate: entriesByDate,
               gradient: habit.gradient,

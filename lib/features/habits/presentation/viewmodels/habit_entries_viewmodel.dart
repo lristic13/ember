@@ -106,11 +106,20 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
     );
   }
 
-  /// Increments today's entry by 1.
+  /// Increments today's entry by 1 (for quantity tracking).
   Future<bool> incrementToday() async {
     final today = DateUtils.dateOnly(DateTime.now());
     final currentValue = _getCurrentValueForDate(today);
     return logEntry(today, currentValue + 1);
+  }
+
+  /// Toggles today's completion status (for completion tracking).
+  Future<bool> toggleTodayCompletion() async {
+    final today = DateUtils.dateOnly(DateTime.now());
+    final currentValue = _getCurrentValueForDate(today);
+    // Toggle: if already done (>0), mark as not done (0), otherwise mark as done (1)
+    final newValue = currentValue > 0 ? 0.0 : 1.0;
+    return logEntry(today, newValue);
   }
 
   /// Gets the current value for today.

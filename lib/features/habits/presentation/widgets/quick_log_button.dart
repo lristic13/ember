@@ -6,11 +6,13 @@ import '../../../../core/constants/app_dimensions.dart';
 class QuickLogButton extends StatefulWidget {
   final VoidCallback onTap;
   final Color color;
+  final IconData icon;
 
   const QuickLogButton({
     super.key,
     required this.onTap,
     this.color = AppColors.accent,
+    this.icon = Icons.add,
   });
 
   @override
@@ -66,8 +68,8 @@ class _QuickLogButtonState extends State<QuickLogButton>
             borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
           ),
           alignment: Alignment.center,
-          child: const Icon(
-            Icons.add,
+          child: Icon(
+            widget.icon,
             color: AppColors.background,
             size: AppDimensions.iconMd,
           ),

@@ -1,6 +1,7 @@
 import 'package:hive_ce/hive.dart';
 
 import '../../domain/entities/habit.dart';
+import '../../domain/entities/tracking_type.dart';
 
 part 'habit_model.g.dart';
 
@@ -16,7 +17,7 @@ class HabitModel extends HiveObject {
   final String? emoji;
 
   @HiveField(3)
-  final String unit;
+  final String? unit; // Only used when trackingType == quantity
 
   @HiveField(4)
   final double? dailyGoal; // Keep for backward compatibility, no longer used
@@ -33,17 +34,24 @@ class HabitModel extends HiveObject {
   @HiveField(8)
   final String? gradientId;
 
+  @HiveField(9)
+  final int trackingTypeIndex; // 0 = completion, 1 = quantity
+
   HabitModel({
     required this.id,
     required this.name,
     this.emoji,
-    required this.unit,
+    this.unit,
     this.dailyGoal,
     this.colorValue,
     required this.createdAt,
     this.isArchived = false,
     this.gradientId,
+    this.trackingTypeIndex = 1, // Default to quantity for backward compatibility
   });
+
+  /// Get the tracking type from the index.
+  TrackingType get trackingType => TrackingType.values[trackingTypeIndex];
 
   /// Creates a [HabitModel] from a [Habit] entity.
   factory HabitModel.fromEntity(Habit habit) {
@@ -51,6 +59,7 @@ class HabitModel extends HiveObject {
       id: habit.id,
       name: habit.name,
       emoji: habit.emoji,
+      trackingTypeIndex: habit.trackingType.index,
       unit: habit.unit,
       gradientId: habit.gradientId,
       createdAt: habit.createdAt,
@@ -64,6 +73,7 @@ class HabitModel extends HiveObject {
       id: id,
       name: name,
       emoji: emoji,
+      trackingType: trackingType,
       unit: unit,
       gradientId: gradientId ?? 'ember',
       createdAt: createdAt,
