@@ -29,7 +29,7 @@ class HabitCard extends ConsumerWidget {
 
     return Card(
       child: InkWell(
-        onTap: () => context.push(AppRoutes.editHabitPath(habit.id)),
+        onTap: () => context.push(AppRoutes.habitDetailsPath(habit.id)),
         borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingMd),
@@ -55,7 +55,6 @@ class HabitCard extends ConsumerWidget {
                         const SizedBox(height: AppDimensions.marginXs),
                         HabitProgressIndicator(
                           currentValue: todayValue,
-                          dailyGoal: habit.dailyGoal,
                           unit: habit.unit,
                         ),
                       ],
@@ -70,7 +69,6 @@ class HabitCard extends ConsumerWidget {
               // Week heatmap
               WeekHeatmap(
                 habitId: habit.id,
-                dailyGoal: habit.dailyGoal,
                 onCellTap: (date, currentValue) => _showEntryEditor(
                   context,
                   date,

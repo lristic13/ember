@@ -61,4 +61,29 @@ abstract class AppColors {
     // Overflow: 101-150% gets glow effect
     return (cellColor: emberMax, glowColor: emberGlow);
   }
+
+  /// Returns the ember color for percentile-based intensity (0.0 to 1.0).
+  /// Glow effect applies to top 10% (intensity >= 0.9).
+  /// Any positive intensity shows at least emberLow color.
+  static ({Color cellColor, Color? glowColor}) getEmberColorForIntensity(
+    double intensity,
+  ) {
+    if (intensity <= 0) {
+      return (cellColor: emberNone, glowColor: null);
+    }
+    if (intensity <= 0.25) {
+      return (cellColor: emberLow, glowColor: null);
+    }
+    if (intensity <= 0.5) {
+      return (cellColor: emberMedium, glowColor: null);
+    }
+    if (intensity <= 0.75) {
+      return (cellColor: emberHigh, glowColor: null);
+    }
+    if (intensity < 0.9) {
+      return (cellColor: emberMax, glowColor: null);
+    }
+    // Top 10% gets glow effect
+    return (cellColor: emberMax, glowColor: emberGlow);
+  }
 }

@@ -21,7 +21,7 @@ class HabitModel extends HiveObject {
   final String unit;
 
   @HiveField(4)
-  final double dailyGoal;
+  final double? dailyGoal; // Keep for backward compatibility, no longer used
 
   @HiveField(5)
   final int? colorValue;
@@ -37,7 +37,7 @@ class HabitModel extends HiveObject {
     required this.name,
     this.emoji,
     required this.unit,
-    required this.dailyGoal,
+    this.dailyGoal,
     this.colorValue,
     required this.createdAt,
     this.isArchived = false,
@@ -50,7 +50,6 @@ class HabitModel extends HiveObject {
       name: habit.name,
       emoji: habit.emoji,
       unit: habit.unit,
-      dailyGoal: habit.dailyGoal,
       colorValue: habit.color?.toARGB32(),
       createdAt: habit.createdAt,
       isArchived: habit.isArchived,
@@ -64,7 +63,6 @@ class HabitModel extends HiveObject {
       name: name,
       emoji: emoji,
       unit: unit,
-      dailyGoal: dailyGoal,
       color: colorValue != null ? Color(colorValue!) : null,
       createdAt: createdAt,
       isArchived: isArchived,

@@ -5,13 +5,11 @@ import '../../../../core/constants/app_text_styles.dart';
 
 class HabitProgressIndicator extends StatelessWidget {
   final double currentValue;
-  final double dailyGoal;
   final String unit;
 
   const HabitProgressIndicator({
     super.key,
     required this.currentValue,
-    required this.dailyGoal,
     required this.unit,
   });
 
@@ -24,14 +22,13 @@ class HabitProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = dailyGoal > 0 ? currentValue / dailyGoal : 0.0;
-    final isComplete = percentage >= 1.0;
+    final hasValue = currentValue > 0;
 
     return Text(
-      '${_formatNumber(currentValue)}/${_formatNumber(dailyGoal)} $unit',
+      '${_formatNumber(currentValue)} $unit today',
       style: AppTextStyles.bodySmall.copyWith(
-        color: isComplete ? AppColors.accent : AppColors.textSecondary,
-        fontWeight: isComplete ? FontWeight.w600 : FontWeight.normal,
+        color: hasValue ? AppColors.accent : AppColors.textSecondary,
+        fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
       ),
     );
   }

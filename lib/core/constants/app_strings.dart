@@ -1,6 +1,6 @@
 abstract class AppStrings {
   // App
-  static const String appName = 'Ember';
+  static const String appName = 'ember.';
   static const String appTagline = 'Small daily sparks become lasting flames';
 
   // Navigation
@@ -14,9 +14,9 @@ abstract class AppStrings {
   static const String deleteHabit = 'Delete Habit';
   static const String habitName = 'Habit Name';
   static const String habitUnit = 'Unit';
-  static const String dailyGoal = 'Daily Goal';
   static const String noHabits = 'No habits yet';
-  static const String noHabitsSubtitle = 'Create your first habit to start tracking';
+  static const String noHabitsSubtitle =
+      'Create your first habit to start tracking';
   static const String habitNameHint = 'e.g., Drink water';
   static const String habitUnitHint = 'e.g., glasses';
 
@@ -49,4 +49,19 @@ abstract class AppStrings {
   static const String entryValue = 'Value';
   static const String clear = 'Clear';
   static const String today = 'Today';
+
+  // Habit Details
+  static const String habitDetails = 'Habit Details';
+  static const String viewYear = 'View Year';
+  static const String yearView = 'Year View';
+
+  // Statistics
+  static const String statistics = 'Statistics';
+  static const String currentStreak = 'Current Streak';
+  static const String longestStreak = 'Longest Streak';
+  static const String totalLogged = 'Total Logged';
+  static const String dailyAverage = 'Daily Average';
+  static const String days = 'days';
+  static const String day = 'day';
+  static const String noEntry = 'No entry';
 }

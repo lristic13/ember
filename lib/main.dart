@@ -13,11 +13,7 @@ Future<void> main() async {
 
   await _initializeHive();
 
-  runApp(
-    const ProviderScope(
-      child: EmberApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: EmberApp()));
 }
 
 Future<void> _initializeHive() async {
@@ -36,7 +32,7 @@ class EmberApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Ember',
+      title: 'ember.',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       routerConfig: appRouter,
