@@ -31,7 +31,7 @@ class HabitsScreen extends ConsumerWidget {
             icon: Icon(
               viewMode == HabitsViewMode.week
                   ? Icons.calendar_month
-                  : Icons.view_week,
+                  : Icons.view_agenda,
             ),
             tooltip: viewMode == HabitsViewMode.week
                 ? AppStrings.monthView
@@ -65,15 +65,18 @@ class HabitsScreen extends ConsumerWidget {
             child: FilledButton(
               onPressed: () => context.push(AppRoutes.createHabit),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.background,
+                backgroundColor: AppColors.accent,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(color: AppColors.textPrimary),
+                  side: BorderSide(color: AppColors.accent),
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
                 ),
               ),
               child: const Text(
                 AppStrings.addHabit,
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

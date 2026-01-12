@@ -73,6 +73,7 @@ class HabitGridCard extends ConsumerWidget {
                     entriesByDate: entriesByDate,
                     intensitiesByDate: intensitiesByDate,
                     gradient: habit.gradient,
+                    expandToFill: true,
                   );
                 },
                 loading: () => const SizedBox(
