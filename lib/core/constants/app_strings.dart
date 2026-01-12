@@ -8,7 +8,7 @@ abstract class AppStrings {
   static const String settings = 'Settings';
   static const String habits = 'Habits';
 
-  // Habits
+  // Activities
   static const String createActivity = 'Create Activity';
   static const String editActivity = 'Edit Activity';
   static const String deleteActivity = 'Delete Activity';
@@ -19,6 +19,16 @@ abstract class AppStrings {
       'Create your first activity to start tracking';
   static const String activityNameHint = 'e.g., Drink water';
   static const String activityUnitHint = 'e.g., glasses';
+
+  // Tracking Types
+  static const String trackingTypeLabel = 'How do you want to track it?';
+  static const String trackingTypeCompletion = 'Yes / No';
+  static const String trackingTypeCompletionDesc = 'Track whether you did it';
+  static const String trackingTypeQuantity = 'Measured';
+  static const String trackingTypeQuantityDesc = 'Track how much you did';
+
+  // Form Labels
+  static const String colorLabel = 'Color';
 
   // Actions
   static const String save = 'Save';
@@ -51,6 +61,10 @@ abstract class AppStrings {
   static const String clear = 'Clear';
   static const String today = 'Today';
   static const String yesterday = 'Yesterday';
+  static const String markAsDone = 'Mark as Done';
+  static const String markAsNotDone = 'Mark as Not Done';
+  static const String completed = 'Completed';
+  static const String notDoneToday = 'Not done today';
 
   // Habit Details
   static const String habitDetails = 'Habit Details';

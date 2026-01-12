@@ -21,6 +21,7 @@ class HabitDetailsContent extends ConsumerWidget {
       context: context,
       habitId: habit.id,
       habitName: habit.name,
+      trackingType: habit.trackingType,
       unit: habit.unit,
       date: date,
       currentValue: value,
