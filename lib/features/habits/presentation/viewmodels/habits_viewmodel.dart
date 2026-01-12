@@ -51,6 +51,7 @@ class HabitsViewModel extends _$HabitsViewModel {
       (failure) => false,
       (updatedHabit) {
         _loadHabits();
+        ref.invalidate(habitByIdProvider(habit.id));
         return true;
       },
     );

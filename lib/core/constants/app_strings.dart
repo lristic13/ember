@@ -25,6 +25,7 @@ abstract class AppStrings {
   static const String cancel = 'Cancel';
   static const String delete = 'Delete';
   static const String add = 'Add';
+  static const String addHabit = 'Add an Activity';
   static const String edit = 'Edit';
   static const String confirm = 'Confirm';
 
@@ -54,6 +55,8 @@ abstract class AppStrings {
   static const String habitDetails = 'Habit Details';
   static const String viewYear = 'View Year';
   static const String yearView = 'Year View';
+  static const String weekView = 'Week View';
+  static const String monthView = 'Month View';
 
   // Statistics
   static const String statistics = 'Statistics';

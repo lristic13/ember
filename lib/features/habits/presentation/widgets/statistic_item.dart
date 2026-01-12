@@ -8,12 +8,14 @@ class StatisticItem extends StatelessWidget {
   final String label;
   final String value;
   final String? unit;
+  final Color valueColor;
 
   const StatisticItem({
     super.key,
     required this.label,
     required this.value,
     this.unit,
+    this.valueColor = AppColors.accent,
   });
 
   @override
@@ -30,7 +32,7 @@ class StatisticItem extends StatelessWidget {
           Text(
             value,
             style: AppTextStyles.displaySmall.copyWith(
-              color: AppColors.accent,
+              color: valueColor,
             ),
           ),
           const SizedBox(height: AppDimensions.paddingXs),

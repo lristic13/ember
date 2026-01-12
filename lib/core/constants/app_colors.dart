@@ -7,7 +7,7 @@ abstract class AppColors {
   static const Color surfaceLight = Color(0xFF252529);
 
   // Ember gradient (heat map intensity)
-  static const Color emberNone = Color(0xFF1A1A1E);
+  static const Color emberNone = Color(0xFF252529);
   static const Color emberLow = Color(0xFF3D2417);
   static const Color emberMedium = Color(0xFF6B3410);
   static const Color emberHigh = Color(0xFFB84D00);

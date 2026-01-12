@@ -78,7 +78,7 @@ class HabitLocalDatasourceImpl implements HabitLocalDatasource {
         name: habit.name,
         emoji: habit.emoji,
         unit: habit.unit,
-        colorValue: habit.colorValue,
+        gradientId: habit.gradientId,
         createdAt: habit.createdAt,
         isArchived: habit.isArchived,
       );
@@ -119,7 +119,7 @@ class HabitLocalDatasourceImpl implements HabitLocalDatasource {
           name: habit.name,
           emoji: habit.emoji,
           unit: habit.unit,
-          colorValue: habit.colorValue,
+          gradientId: habit.gradientId,
           createdAt: habit.createdAt,
           isArchived: true,
         );

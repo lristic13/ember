@@ -17,10 +17,7 @@ import 'week_heatmap.dart';
 class HabitCard extends ConsumerWidget {
   final Habit habit;
 
-  const HabitCard({
-    super.key,
-    required this.habit,
-  });
+  const HabitCard({super.key, required this.habit});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,27 +38,26 @@ class HabitCard extends ConsumerWidget {
                 children: [
                   HabitEmoji(
                     emoji: habit.emoji,
-                    color: habit.color,
+                    color: habit.gradient.primaryColor,
                   ),
                   const SizedBox(width: AppDimensions.marginMd),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          habit.name,
-                          style: AppTextStyles.titleLarge,
-                        ),
+                        Text(habit.name, style: AppTextStyles.titleLarge),
                         const SizedBox(height: AppDimensions.marginXs),
                         HabitProgressIndicator(
                           currentValue: todayValue,
                           unit: habit.unit,
+                          color: habit.gradient.primaryColor,
                         ),
                       ],
                     ),
                   ),
                   QuickLogButton(
                     onTap: () => _incrementToday(ref),
+                    color: habit.gradient.primaryColor,
                   ),
                 ],
               ),
@@ -69,11 +65,9 @@ class HabitCard extends ConsumerWidget {
               // Week heatmap
               WeekHeatmap(
                 habitId: habit.id,
-                onCellTap: (date, currentValue) => _showEntryEditor(
-                  context,
-                  date,
-                  currentValue,
-                ),
+                gradient: habit.gradient,
+                onCellTap: (date, currentValue) =>
+                    _showEntryEditor(context, date, currentValue),
               ),
             ],
           ),

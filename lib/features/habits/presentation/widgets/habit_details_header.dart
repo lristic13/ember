@@ -15,7 +15,7 @@ class HabitDetailsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        HabitEmoji(emoji: habit.emoji, color: habit.color),
+        HabitEmoji(emoji: habit.emoji, color: habit.gradient.primaryColor),
         const SizedBox(height: AppDimensions.paddingMd),
         Text(
           habit.name,

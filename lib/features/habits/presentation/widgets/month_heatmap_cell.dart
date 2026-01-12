@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/constants/habit_gradients.dart';
 
 class MonthHeatmapCell extends StatelessWidget {
   final int? dayNumber;
   final double intensity;
   final bool isToday;
   final bool isOutsideMonth;
+  final HabitGradient gradient;
   final VoidCallback? onTap;
 
   const MonthHeatmapCell({
@@ -17,6 +19,7 @@ class MonthHeatmapCell extends StatelessWidget {
     required this.intensity,
     this.isToday = false,
     this.isOutsideMonth = false,
+    required this.gradient,
     this.onTap,
   });
 
@@ -29,7 +32,7 @@ class MonthHeatmapCell extends StatelessWidget {
       );
     }
 
-    final colors = AppColors.getEmberColorForIntensity(intensity);
+    final colors = gradient.getColorsForIntensity(intensity);
 
     return GestureDetector(
       onTap: onTap,
@@ -43,7 +46,7 @@ class MonthHeatmapCell extends StatelessWidget {
           ),
           border: isToday
               ? Border.all(
-                  color: AppColors.accent,
+                  color: gradient.primaryColor,
                   width: 2,
                 )
               : null,

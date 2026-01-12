@@ -1,4 +1,5 @@
-import 'dart:ui';
+import '../../../../core/constants/habit_gradient_presets.dart';
+import '../../../../core/constants/habit_gradients.dart';
 
 /// Represents a habit that a user wants to track.
 class Habit {
@@ -6,7 +7,7 @@ class Habit {
   final String name;
   final String? emoji;
   final String unit;
-  final Color? color;
+  final String gradientId;
   final DateTime createdAt;
   final bool isArchived;
 
@@ -15,17 +16,20 @@ class Habit {
     required this.name,
     this.emoji,
     required this.unit,
-    this.color,
+    this.gradientId = 'ember',
     required this.createdAt,
     this.isArchived = false,
   });
+
+  /// Get the HabitGradient for this habit.
+  HabitGradient get gradient => HabitGradientPresets.getById(gradientId);
 
   Habit copyWith({
     String? id,
     String? name,
     String? emoji,
     String? unit,
-    Color? color,
+    String? gradientId,
     DateTime? createdAt,
     bool? isArchived,
   }) {
@@ -34,7 +38,7 @@ class Habit {
       name: name ?? this.name,
       emoji: emoji ?? this.emoji,
       unit: unit ?? this.unit,
-      color: color ?? this.color,
+      gradientId: gradientId ?? this.gradientId,
       createdAt: createdAt ?? this.createdAt,
       isArchived: isArchived ?? this.isArchived,
     );
@@ -49,7 +53,7 @@ class Habit {
           name == other.name &&
           emoji == other.emoji &&
           unit == other.unit &&
-          color == other.color &&
+          gradientId == other.gradientId &&
           createdAt == other.createdAt &&
           isArchived == other.isArchived;
 
@@ -59,12 +63,12 @@ class Habit {
       name.hashCode ^
       emoji.hashCode ^
       unit.hashCode ^
-      color.hashCode ^
+      gradientId.hashCode ^
       createdAt.hashCode ^
       isArchived.hashCode;
 
   @override
   String toString() {
-    return 'Habit{id: $id, name: $name, emoji: $emoji, unit: $unit, isArchived: $isArchived}';
+    return 'Habit{id: $id, name: $name, emoji: $emoji, unit: $unit, gradientId: $gradientId, isArchived: $isArchived}';
   }
 }

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/constants/habit_gradients.dart';
 import '../../../../core/utils/date_utils.dart' as date_utils;
 import '../viewmodels/intensity_viewmodel.dart';
 import 'heatmap_navigation.dart';
@@ -13,12 +14,14 @@ import 'month_heatmap_cell.dart';
 class MonthHeatmap extends ConsumerStatefulWidget {
   final String habitId;
   final Map<DateTime, double> entriesByDate;
+  final HabitGradient gradient;
   final void Function(DateTime date, double currentValue)? onCellTap;
 
   const MonthHeatmap({
     super.key,
     required this.habitId,
     required this.entriesByDate,
+    required this.gradient,
     this.onCellTap,
   });
 
@@ -183,6 +186,7 @@ class _MonthHeatmapState extends ConsumerState<MonthHeatmap> {
                   dayNumber: date.day,
                   intensity: intensity,
                   isToday: isToday,
+                  gradient: widget.gradient,
                   onTap: widget.onCellTap != null
                       ? () => widget.onCellTap!(date, value)
                       : null,
