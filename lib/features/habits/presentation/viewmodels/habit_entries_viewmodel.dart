@@ -1,10 +1,35 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import 'habit_entries_state.dart';
 import 'habits_providers.dart';
+import 'intensity_viewmodel.dart';
 
 part 'habit_entries_viewmodel.g.dart';
+
+/// Provider that loads all entries for a habit and returns them as a map by date.
+@riverpod
+Future<Map<DateTime, double>> allHabitEntries(Ref ref, String habitId) async {
+  final getHabitEntries = ref.read(getHabitEntriesUseCaseProvider);
+  final result = await getHabitEntries(habitId);
+
+  return result.fold(
+    (failure) => <DateTime, double>{},
+    (entries) {
+      final entriesByDate = <DateTime, double>{};
+      for (final entry in entries) {
+        final normalizedDate = DateTime(
+          entry.date.year,
+          entry.date.month,
+          entry.date.day,
+        );
+        entriesByDate[normalizedDate] = entry.value;
+      }
+      return entriesByDate;
+    },
+  );
+}
 
 @riverpod
 class HabitEntriesViewModel extends _$HabitEntriesViewModel {
@@ -73,7 +98,11 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
         state = previousState;
         return false;
       },
-      (_) => true,
+      (_) {
+        // Invalidate intensity calculations so heatmap colors update
+        ref.invalidate(habitIntensitiesProvider);
+        return true;
+      },
     );
   }
 

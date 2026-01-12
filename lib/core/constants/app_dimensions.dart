@@ -44,6 +44,16 @@ abstract class AppDimensions {
   static const double weekHeatMapCellRadius = 8.0;
   static const double weekHeatMapTodayBorderWidth = 2.0;
 
+  // Heat Map (Month view - medium cells)
+  static const double monthHeatMapCellSize = 40.0;
+  static const double monthHeatMapCellSpacing = 4.0;
+  static const double monthHeatMapCellRadius = 6.0;
+
+  // Heat Map (Mini-month for year view - tiny cells)
+  static const double miniMonthCellSize = 10.0;
+  static const double miniMonthCellSpacing = 2.0;
+  static const double miniMonthCellRadius = 2.0;
+
   // Card
   static const double cardElevation = 0.0;
   static const double cardBorderWidth = 1.0;

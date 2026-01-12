@@ -5,24 +5,21 @@ import '../../../../core/constants/app_dimensions.dart';
 
 class HeatmapCell extends StatelessWidget {
   final DateTime date;
-  final double value;
-  final double dailyGoal;
+  final double intensity;
   final bool isToday;
   final VoidCallback? onTap;
 
   const HeatmapCell({
     super.key,
     required this.date,
-    required this.value,
-    required this.dailyGoal,
+    required this.intensity,
     required this.isToday,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final percentage = dailyGoal > 0 ? value / dailyGoal : 0.0;
-    final colors = AppColors.getEmberColorWithGlow(percentage);
+    final colors = AppColors.getEmberColorForIntensity(intensity);
 
     return GestureDetector(
       onTap: onTap,

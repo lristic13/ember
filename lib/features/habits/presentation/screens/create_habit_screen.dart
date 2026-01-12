@@ -26,12 +26,11 @@ class CreateHabitScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingMd),
           child: HabitForm(
-            onSubmit: (name, unit, dailyGoal, emoji) async {
+            onSubmit: (name, unit, emoji) async {
               final habit = Habit(
                 id: const Uuid().v4(),
                 name: name,
                 unit: unit,
-                dailyGoal: dailyGoal,
                 emoji: emoji,
                 createdAt: DateTime.now(),
               );
