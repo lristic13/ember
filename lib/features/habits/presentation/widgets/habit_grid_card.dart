@@ -8,6 +8,7 @@ import '../../../../core/router/app_router.dart';
 import '../../domain/entities/habit.dart';
 import '../viewmodels/habit_entries_viewmodel.dart';
 import '../viewmodels/intensity_viewmodel.dart';
+import 'entry_editor_bottom_sheet.dart';
 import 'mini_month_heatmap.dart';
 
 class HabitGridCard extends ConsumerWidget {
@@ -74,6 +75,7 @@ class HabitGridCard extends ConsumerWidget {
                     intensitiesByDate: intensitiesByDate,
                     gradient: habit.gradient,
                     expandToFill: true,
+                    onCellTap: (date, value) => _showEntryEditor(context, date, value),
                   );
                 },
                 loading: () => const SizedBox(
@@ -92,6 +94,17 @@ class HabitGridCard extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showEntryEditor(BuildContext context, DateTime date, double value) {
+    showEntryEditorBottomSheet(
+      context: context,
+      habitId: habit.id,
+      habitName: habit.name,
+      unit: habit.unit,
+      date: date,
+      currentValue: value,
     );
   }
 

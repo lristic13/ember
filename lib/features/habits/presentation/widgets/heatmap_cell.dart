@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/habit_gradients.dart';
+import '../../../../core/utils/date_utils.dart' as date_utils;
 
 class HeatmapCell extends StatelessWidget {
   final DateTime date;
@@ -22,10 +23,13 @@ class HeatmapCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = gradient.getColorsForIntensity(intensity);
+    final isFuture = date_utils.DateUtils.isFuture(date);
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
+      onTap: isFuture ? null : onTap,
+      child: Opacity(
+        opacity: isFuture ? 0.3 : 1.0,
+        child: Container(
         width: AppDimensions.weekHeatMapCellSize,
         height: AppDimensions.weekHeatMapCellSize,
         decoration: BoxDecoration(
@@ -49,6 +53,7 @@ class HeatmapCell extends StatelessWidget {
                 ]
               : null,
         ),
+      ),
       ),
     );
   }

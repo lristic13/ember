@@ -50,6 +50,7 @@ abstract class AppStrings {
   static const String entryValue = 'Value';
   static const String clear = 'Clear';
   static const String today = 'Today';
+  static const String yesterday = 'Yesterday';
 
   // Habit Details
   static const String habitDetails = 'Habit Details';

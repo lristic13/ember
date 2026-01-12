@@ -47,4 +47,17 @@ abstract class DateUtils {
   static bool isToday(DateTime date) {
     return isSameDay(date, DateTime.now());
   }
+
+  /// Checks if the given date is yesterday.
+  static bool isYesterday(DateTime date) {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    return isSameDay(date, yesterday);
+  }
+
+  /// Checks if the given date is in the future.
+  static bool isFuture(DateTime date) {
+    final today = dateOnly(DateTime.now());
+    final targetDate = dateOnly(date);
+    return targetDate.isAfter(today);
+  }
 }

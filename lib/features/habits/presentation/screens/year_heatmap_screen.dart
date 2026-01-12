@@ -31,6 +31,7 @@ class YearHeatmapScreen extends ConsumerWidget {
           return entriesAsync.when(
             data: (entriesByDate) => YearHeatmapContent(
               habitId: habitId,
+              habitName: habit.name,
               unit: habit.unit,
               entriesByDate: entriesByDate,
               gradient: habit.gradient,

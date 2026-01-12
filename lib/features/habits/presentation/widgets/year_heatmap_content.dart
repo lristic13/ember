@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/habit_gradients.dart';
 import '../viewmodels/intensity_viewmodel.dart';
+import 'entry_editor_bottom_sheet.dart';
 import 'heatmap_navigation.dart';
 import 'year_month_grid.dart';
 
 class YearHeatmapContent extends ConsumerStatefulWidget {
   final String habitId;
+  final String habitName;
   final String unit;
   final Map<DateTime, double> entriesByDate;
   final HabitGradient gradient;
@@ -18,6 +18,7 @@ class YearHeatmapContent extends ConsumerStatefulWidget {
   const YearHeatmapContent({
     super.key,
     required this.habitId,
+    required this.habitName,
     required this.unit,
     required this.entriesByDate,
     required this.gradient,
@@ -48,18 +49,14 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
     });
   }
 
-  void _showTooltip(BuildContext context, DateTime date, double value) {
-    final formattedDate = DateFormat.MMMd().format(date);
-    final valueText = value > 0
-        ? '${value.toStringAsFixed(value == value.truncateToDouble() ? 0 : 1)} ${widget.unit}'
-        : AppStrings.noEntry;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$formattedDate: $valueText'),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+  void _showEntryEditor(BuildContext context, DateTime date, double value) {
+    showEntryEditorBottomSheet(
+      context: context,
+      habitId: widget.habitId,
+      habitName: widget.habitName,
+      unit: widget.unit,
+      date: date,
+      currentValue: value,
     );
   }
 
@@ -93,7 +90,7 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: intensitiesByDate,
               gradient: widget.gradient,
-              onCellTap: (date, value) => _showTooltip(context, date, value),
+              onCellTap: (date, value) => _showEntryEditor(context, date, value),
             ),
             loading: () => const Center(
               child: Padding(
@@ -106,7 +103,7 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: const {},
               gradient: widget.gradient,
-              onCellTap: (date, value) => _showTooltip(context, date, value),
+              onCellTap: (date, value) => _showEntryEditor(context, date, value),
             ),
           ),
         ],
