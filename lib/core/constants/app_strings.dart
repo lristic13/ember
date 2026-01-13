@@ -79,6 +79,7 @@ abstract class AppStrings {
   static const String longestStreak = 'Longest Streak';
   static const String totalLogged = 'Total Logged';
   static const String dailyAverage = 'Daily Average';
+  static const String bestDay = 'Best Day';
   static const String days = 'days';
   static const String day = 'day';
   static const String noEntry = 'No entry';

@@ -30,12 +30,14 @@ class HabitStatisticsViewModel extends _$HabitStatisticsViewModel {
       );
       final totalLogged = StatisticsCalculator.calculateTotalLogged(entries);
       final dailyAverage = StatisticsCalculator.calculateDailyAverage(entries);
+      final bestDay = StatisticsCalculator.calculateBestDay(entries);
 
       state = HabitStatisticsLoaded(
         currentStreak: currentStreak,
         longestStreak: longestStreak,
         totalLogged: totalLogged,
         dailyAverage: dailyAverage,
+        bestDay: bestDay,
       );
     });
   }

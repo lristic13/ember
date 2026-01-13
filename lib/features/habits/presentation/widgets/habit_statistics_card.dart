@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../domain/entities/tracking_type.dart';
 import '../viewmodels/habit_statistics_state.dart';
 import 'statistic_item.dart';
 
@@ -10,12 +11,14 @@ class HabitStatisticsCard extends StatelessWidget {
   final HabitStatisticsState state;
   final String? unit;
   final Color accentColor;
+  final TrackingType? trackingType;
 
   const HabitStatisticsCard({
     super.key,
     required this.state,
     this.unit,
     this.accentColor = AppColors.accent,
+    this.trackingType,
   });
 
   String _formatNumber(double value) {
@@ -43,6 +46,9 @@ class HabitStatisticsCard extends StatelessWidget {
     }
 
     final stats = state as HabitStatisticsLoaded;
+
+    final showBestDay = trackingType == TrackingType.quantity &&
+        stats.bestDay != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,6 +96,19 @@ class HabitStatisticsCard extends StatelessWidget {
             ),
           ],
         ),
+        if (showBestDay) ...[
+          const SizedBox(height: AppDimensions.paddingSm),
+          Center(
+            child: SizedBox(
+              width: double.infinity,
+              child: StatisticItem(
+                label: AppStrings.bestDay,
+                value: stats.bestDay!,
+                valueColor: accentColor,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

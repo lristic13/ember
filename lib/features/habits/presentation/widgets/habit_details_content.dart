@@ -46,6 +46,7 @@ class HabitDetailsContent extends ConsumerWidget {
             state: statisticsState,
             unit: habit.unit,
             accentColor: habit.gradient.primaryColor,
+            trackingType: habit.trackingType,
           ),
           const SizedBox(height: AppDimensions.paddingLg),
           entriesAsync.when(
