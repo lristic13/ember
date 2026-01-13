@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/utils/date_utils.dart';
 import 'habit_entries_state.dart';
+import 'habit_statistics_viewmodel.dart';
 import 'habits_providers.dart';
 import 'intensity_viewmodel.dart';
 
@@ -99,8 +100,10 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
         return false;
       },
       (_) {
-        // Invalidate intensity calculations so heatmap colors update
+        // Invalidate providers so UI updates
         ref.invalidate(habitIntensitiesProvider);
+        ref.invalidate(allHabitEntriesProvider(habitId));
+        ref.invalidate(habitStatisticsViewModelProvider(habitId));
         return true;
       },
     );

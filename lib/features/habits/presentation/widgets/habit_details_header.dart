@@ -24,7 +24,7 @@ class HabitDetailsHeader extends StatelessWidget {
         ),
         const SizedBox(height: AppDimensions.paddingXs),
         Text(
-          'Tracking: ${habit.unit}',
+          habit.isQuantity ? 'Tracking: ${habit.unit}' : 'Tracking: Yes / No',
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),

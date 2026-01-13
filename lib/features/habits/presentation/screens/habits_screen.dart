@@ -1,12 +1,12 @@
+import 'package:animations/animations.dart';
 import 'package:ember/core/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/router/app_router.dart';
+import 'create_habit_screen.dart';
 import '../viewmodels/habits_state.dart';
 import '../viewmodels/habits_viewmodel.dart';
 import '../viewmodels/view_mode_provider.dart';
@@ -63,20 +63,34 @@ class HabitsScreen extends ConsumerWidget {
           child: SizedBox(
             width: double.infinity,
             height: AppDimensions.buttonHeightLg,
-            child: FilledButton(
-              onPressed: () => context.push(AppRoutes.createHabit),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: AppColors.accent),
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                ),
+            child: OpenContainer(
+              transitionType: ContainerTransitionType.fadeThrough,
+              transitionDuration: const Duration(milliseconds: 400),
+              openBuilder: (context, _) => const CreateHabitScreen(),
+              closedShape: RoundedRectangleBorder(
+                side: BorderSide(color: AppColors.textPrimary),
+                borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
               ),
-              child: const Text(
-                AppStrings.addHabit,
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
+              closedColor: AppColors.background,
+              openColor: AppColors.background,
+              middleColor: AppColors.background,
+              closedElevation: 0,
+              openElevation: 0,
+              closedBuilder: (context, openContainer) => Material(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+                child: InkWell(
+                  onTap: openContainer,
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+                  child: const Center(
+                    child: Text(
+                      AppStrings.addHabit,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

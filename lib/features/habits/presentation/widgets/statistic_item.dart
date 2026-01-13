@@ -31,12 +31,10 @@ class StatisticItem extends StatelessWidget {
         children: [
           Text(
             value,
-            style: AppTextStyles.displaySmall.copyWith(
-              color: valueColor,
-            ),
+            style: AppTextStyles.displaySmall.copyWith(color: valueColor),
           ),
           const SizedBox(height: AppDimensions.paddingXs),
-          if (unit != null) ...[
+          if (unit != null && unit!.isNotEmpty) ...[
             Text(
               unit!,
               style: AppTextStyles.bodySmall.copyWith(
