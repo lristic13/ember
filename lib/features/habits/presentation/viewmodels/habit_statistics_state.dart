@@ -15,12 +15,14 @@ final class HabitStatisticsLoaded extends HabitStatisticsState {
   final int longestStreak;
   final double totalLogged;
   final double dailyAverage;
+  final String? bestDay;
 
   const HabitStatisticsLoaded({
     required this.currentStreak,
     required this.longestStreak,
     required this.totalLogged,
     required this.dailyAverage,
+    this.bestDay,
   });
 }
 

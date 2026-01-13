@@ -101,4 +101,60 @@ abstract class StatisticsCalculator {
     final value = entriesByDate[date] ?? 0;
     return value > 0;
   }
+
+  /// Calculates the best day of the week based on highest average value.
+  /// Returns the weekday name (e.g., "Monday") or null if no entries.
+  /// Ties go to the earliest weekday (Monday first).
+  static String? calculateBestDay(List<HabitEntry> entries) {
+    if (entries.isEmpty) return null;
+
+    // Group entries by weekday and calculate totals/counts
+    final weekdayTotals = <int, double>{};
+    final weekdayCounts = <int, int>{};
+
+    for (final entry in entries) {
+      if (entry.value <= 0) continue;
+
+      final weekday = entry.date.weekday; // 1=Monday, 7=Sunday
+      weekdayTotals[weekday] = (weekdayTotals[weekday] ?? 0) + entry.value;
+      weekdayCounts[weekday] = (weekdayCounts[weekday] ?? 0) + 1;
+    }
+
+    if (weekdayTotals.isEmpty) return null;
+
+    // Calculate averages and find best day
+    int? bestWeekday;
+    double bestAverage = 0;
+
+    // Iterate 1-7 to ensure earliest weekday wins ties
+    for (int weekday = 1; weekday <= 7; weekday++) {
+      final total = weekdayTotals[weekday];
+      final count = weekdayCounts[weekday];
+
+      if (total != null && count != null && count > 0) {
+        final average = total / count;
+        if (average > bestAverage) {
+          bestAverage = average;
+          bestWeekday = weekday;
+        }
+      }
+    }
+
+    if (bestWeekday == null) return null;
+
+    return _weekdayName(bestWeekday);
+  }
+
+  static String _weekdayName(int weekday) {
+    const names = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    return names[weekday - 1];
+  }
 }
