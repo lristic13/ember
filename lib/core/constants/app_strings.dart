@@ -6,7 +6,7 @@ abstract class AppStrings {
   // Navigation
   static const String home = 'Home';
   static const String settings = 'Settings';
-  static const String habits = 'Habits';
+  static const String activities = 'Activities';
 
   // Activities
   static const String createActivity = 'Create Activity';
@@ -35,20 +35,20 @@ abstract class AppStrings {
   static const String cancel = 'Cancel';
   static const String delete = 'Delete';
   static const String add = 'Add';
-  static const String addHabit = 'Add an Activity';
+  static const String addActivity = 'Add an Activity';
   static const String edit = 'Edit';
   static const String confirm = 'Confirm';
 
   // Confirmation
-  static const String deleteHabitTitle = 'Delete Habit?';
-  static const String deleteHabitMessage =
-      'This will permanently delete this habit and all its entries.';
+  static const String deleteActivityTitle = 'Delete Activity?';
+  static const String deleteActivityMessage =
+      'This will permanently delete this activity and all its entries.';
 
   // Errors
   static const String errorGeneric = 'Something went wrong';
-  static const String errorLoadingHabits = 'Failed to load habits';
-  static const String errorSavingHabit = 'Failed to save habit';
-  static const String errorDeletingHabit = 'Failed to delete habit';
+  static const String errorLoadingActivities = 'Failed to load activities';
+  static const String errorSavingActivities = 'Failed to save activity';
+  static const String errorDeletingActivities = 'Failed to delete activity';
 
   // Validation
   static const String validationRequired = 'This field is required';
@@ -66,8 +66,8 @@ abstract class AppStrings {
   static const String completed = 'Completed';
   static const String notDoneToday = 'Not done today';
 
-  // Habit Details
-  static const String habitDetails = 'Habit Details';
+  // Activity Details
+  static const String activityDetails = 'Activity Details';
   static const String viewYear = 'View Year';
   static const String yearView = 'Year View';
   static const String weekView = 'Week View';
@@ -83,4 +83,10 @@ abstract class AppStrings {
   static const String days = 'days';
   static const String day = 'day';
   static const String noEntry = 'No entry';
+
+  // Insights
+  static const String insights = 'Insights';
+  static const String noInsightsYet = 'No insights yet';
+  static const String noInsightsSubtitle =
+      'Start logging activities to see\nyour consistency breakdown';
 }

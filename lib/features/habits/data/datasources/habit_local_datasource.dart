@@ -51,11 +51,13 @@ class HabitLocalDatasourceImpl implements HabitLocalDatasource {
   @override
   Future<List<HabitModel>> getHabits({bool includeArchived = false}) async {
     try {
-      final habits = _habitsBox.values.toList();
-      if (includeArchived) {
-        return habits;
+      var habits = _habitsBox.values.toList();
+      if (!includeArchived) {
+        habits = habits.where((h) => !h.isArchived).toList();
       }
-      return habits.where((h) => !h.isArchived).toList();
+      // Sort by createdAt descending (newest first)
+      habits.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return habits;
     } catch (e) {
       throw DatabaseException('Failed to get habits: $e');
     }

@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../viewmodels/habit_entries_viewmodel.dart';
 import '../viewmodels/habits_viewmodel.dart';
@@ -9,10 +12,7 @@ import '../widgets/year_heatmap_content.dart';
 class YearHeatmapScreen extends ConsumerWidget {
   final String habitId;
 
-  const YearHeatmapScreen({
-    super.key,
-    required this.habitId,
-  });
+  const YearHeatmapScreen({super.key, required this.habitId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,8 +20,21 @@ class YearHeatmapScreen extends ConsumerWidget {
     final entriesAsync = ref.watch(allHabitEntriesProvider(habitId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.yearView),
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: AppBar(
+              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              title: const Text(
+                AppStrings.yearView,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
       ),
       body: habitAsync.when(
         data: (habit) {

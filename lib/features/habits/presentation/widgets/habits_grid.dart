@@ -11,8 +11,19 @@ class HabitsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+    final bottomPadding =
+        MediaQuery.of(context).padding.bottom +
+        AppDimensions.buttonHeightLg +
+        AppDimensions.paddingMd * 2;
+
     return GridView.builder(
-      padding: const EdgeInsets.all(AppDimensions.paddingMd),
+      padding: EdgeInsets.only(
+        top: topPadding + AppDimensions.paddingMd,
+        left: AppDimensions.paddingMd,
+        right: AppDimensions.paddingMd,
+        bottom: bottomPadding,
+      ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: AppDimensions.paddingSm,
