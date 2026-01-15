@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/habit.dart';
@@ -14,17 +17,38 @@ class CreateHabitScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.createActivity),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => context.pop(),
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: AppBar(
+              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              title: const Text(
+                AppStrings.createActivity,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => context.pop(),
+              ),
+            ),
+          ),
         ),
       ),
       body: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.paddingMd),
+          padding: EdgeInsets.only(
+            top: topPadding + AppDimensions.paddingMd,
+            left: AppDimensions.paddingMd,
+            right: AppDimensions.paddingMd,
+            bottom: AppDimensions.paddingMd,
+          ),
           child: HabitForm(
             onSubmit: (name, trackingType, unit, emoji, gradientId) async {
               final habit = Habit(

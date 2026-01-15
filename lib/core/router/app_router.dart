@@ -6,6 +6,7 @@ import '../../features/habits/presentation/screens/edit_habit_screen.dart';
 import '../../features/habits/presentation/screens/habit_details_screen.dart';
 import '../../features/habits/presentation/screens/habits_screen.dart';
 import '../../features/habits/presentation/screens/year_heatmap_screen.dart';
+import '../../features/insights/presentation/screens/insights_screen.dart';
 
 abstract class AppRoutes {
   static const String home = '/';
@@ -14,6 +15,7 @@ abstract class AppRoutes {
   static const String habitDetails = '/habits/:id';
   static const String editHabit = '/habits/:id/edit';
   static const String yearHeatmap = '/habits/:id/year';
+  static const String insights = '/insights';
 
   static String habitDetailsPath(String id) => '/habits/$id';
   static String editHabitPath(String id) => '/habits/$id/edit';
@@ -55,6 +57,15 @@ final appRouter = GoRouter(
         final id = state.pathParameters['id']!;
         return YearHeatmapScreen(habitId: id);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.insights,
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: const InsightsScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

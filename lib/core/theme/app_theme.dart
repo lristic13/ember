@@ -12,6 +12,9 @@ abstract class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.background,
       textTheme: GoogleFonts.latoTextTheme(ThemeData.dark().textTheme),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       colorScheme: const ColorScheme.dark(
         primary: AppColors.accent,
         secondary: AppColors.accent,

@@ -124,17 +124,147 @@ abstract class HabitGradientPresets {
     glow: Color(0xFFCCCCCC),
   );
 
+  // Ruby (Deep Red)
+  static const HabitGradient ruby = HabitGradient(
+    id: 'ruby',
+    name: 'Ruby',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF3D1515),
+    medium: Color(0xFF6B2222),
+    high: Color(0xFFB83A3A),
+    max: Color(0xFFE53935),
+    glow: Color(0xFFFF6659),
+  );
+
+  // Peach (Soft Orange)
+  static const HabitGradient peach = HabitGradient(
+    id: 'peach',
+    name: 'Peach',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF3D2A22),
+    medium: Color(0xFF6B4A3A),
+    high: Color(0xFFB87A62),
+    max: Color(0xFFFFAB91),
+    glow: Color(0xFFFFC4B0),
+  );
+
+  // Lime (Vibrant Green)
+  static const HabitGradient lime = HabitGradient(
+    id: 'lime',
+    name: 'Lime',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF2A3D17),
+    medium: Color(0xFF4A6B22),
+    high: Color(0xFF7AB830),
+    max: Color(0xFFAEEA00),
+    glow: Color(0xFFC6FF41),
+  );
+
+  // Sky (Light Blue)
+  static const HabitGradient sky = HabitGradient(
+    id: 'sky',
+    name: 'Sky',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF17303D),
+    medium: Color(0xFF22526B),
+    high: Color(0xFF4A90B8),
+    max: Color(0xFF81D4FA),
+    glow: Color(0xFFB3E5FC),
+  );
+
+  // Violet (Deep Purple)
+  static const HabitGradient violet = HabitGradient(
+    id: 'violet',
+    name: 'Violet',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF1F1739),
+    medium: Color(0xFF352566),
+    high: Color(0xFF5A3DB8),
+    max: Color(0xFF7C4DFF),
+    glow: Color(0xFFA47FFF),
+  );
+
+  // Magenta (Hot Pink)
+  static const HabitGradient magenta = HabitGradient(
+    id: 'magenta',
+    name: 'Magenta',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF3D1728),
+    medium: Color(0xFF6B2245),
+    high: Color(0xFFB83070),
+    max: Color(0xFFFF4081),
+    glow: Color(0xFFFF79A3),
+  );
+
+  // Amber (Golden)
+  static const HabitGradient amber = HabitGradient(
+    id: 'amber',
+    name: 'Amber',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF3D2E0F),
+    medium: Color(0xFF6B5010),
+    high: Color(0xFFB88A00),
+    max: Color(0xFFFFB300),
+    glow: Color(0xFFFFC940),
+  );
+
+  // Sage (Muted Green)
+  static const HabitGradient sage = HabitGradient(
+    id: 'sage',
+    name: 'Sage',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF1E2E20),
+    medium: Color(0xFF3A5C3E),
+    high: Color(0xFF6B9970),
+    max: Color(0xFFA5D6A7),
+    glow: Color(0xFFC8E6C9),
+  );
+
+  // Slate (Blue Gray)
+  static const HabitGradient slate = HabitGradient(
+    id: 'slate',
+    name: 'Slate',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF1E2528),
+    medium: Color(0xFF3D4F56),
+    high: Color(0xFF607D8B),
+    max: Color(0xFF90A4AE),
+    glow: Color(0xFFB0BEC5),
+  );
+
+  // Copper (Metallic Warm)
+  static const HabitGradient copper = HabitGradient(
+    id: 'copper',
+    name: 'Copper',
+    none: Color(0xFF1A1A1E),
+    low: Color(0xFF2E2117),
+    medium: Color(0xFF5C3D26),
+    high: Color(0xFF8B5E34),
+    max: Color(0xFFB87333),
+    glow: Color(0xFFD4945A),
+  );
+
   /// All available gradients.
   static const List<HabitGradient> all = [
-    ember,
+    ruby,
     coral,
+    ember,
+    peach,
+    amber,
     sunflower,
+    lime,
     mint,
-    ocean,
-    lavender,
-    rose,
+    sage,
     teal,
+    sky,
+    ocean,
+    violet,
+    lavender,
+    magenta,
+    rose,
+    copper,
     sand,
+    slate,
     silver,
   ];
 
@@ -144,9 +274,6 @@ abstract class HabitGradientPresets {
   /// Get gradient by ID, returns default if not found.
   static HabitGradient getById(String? id) {
     if (id == null) return defaultGradient;
-    return all.firstWhere(
-      (g) => g.id == id,
-      orElse: () => defaultGradient,
-    );
+    return all.firstWhere((g) => g.id == id, orElse: () => defaultGradient);
   }
 }

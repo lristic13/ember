@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,9 +7,11 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/router/app_router.dart';
 import '../viewmodels/habits_viewmodel.dart';
 import '../widgets/habit_form.dart';
-import '../widgets/delete_habit_dialog.dart';
+import '../widgets/delete_confirmation_bottom_sheet.dart';
+import '../widgets/habit_options_bottom_sheet.dart';
 
 class EditHabitScreen extends ConsumerWidget {
   final String habitId;
@@ -18,24 +22,44 @@ class EditHabitScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final habitAsync = ref.watch(habitByIdProvider(habitId));
 
+    final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.editActivity),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => context.pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            color: AppColors.error,
-            onPressed: () => _showDeleteDialog(context, ref),
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: AppBar(
+              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              title: const Text(
+                AppStrings.editActivity,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => context.pop(),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () => _showOptionsSheet(context, ref),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
       body: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.paddingMd),
+          padding: EdgeInsets.only(
+            top: topPadding + AppDimensions.paddingMd,
+            left: AppDimensions.paddingMd,
+            right: AppDimensions.paddingMd,
+            bottom: AppDimensions.paddingMd,
+          ),
           child: habitAsync.when(
             data: (habit) {
               if (habit == null) {
@@ -76,19 +100,20 @@ class EditHabitScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => const DeleteHabitDialog(),
-    );
+  Future<void> _showOptionsSheet(BuildContext context, WidgetRef ref) async {
+    final result = await HabitOptionsBottomSheet.show(context);
 
-    if (confirmed == true && context.mounted) {
-      final success = await ref
-          .read(habitsViewModelProvider.notifier)
-          .deleteHabit(habitId);
+    if (result == HabitOptionResult.delete && context.mounted) {
+      final confirmed = await DeleteConfirmationBottomSheet.show(context);
 
-      if (success && context.mounted) {
-        context.pop();
+      if (confirmed == true && context.mounted) {
+        final success = await ref
+            .read(habitsViewModelProvider.notifier)
+            .deleteHabit(habitId);
+
+        if (success && context.mounted) {
+          context.go(AppRoutes.home);
+        }
       }
     }
   }

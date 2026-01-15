@@ -78,8 +78,15 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
       ),
     );
 
+    final topPadding = MediaQuery.of(context).padding.top;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppDimensions.paddingMd),
+      padding: EdgeInsets.only(
+        top: topPadding + AppDimensions.paddingMd,
+        left: AppDimensions.paddingMd,
+        right: AppDimensions.paddingMd,
+        bottom: AppDimensions.paddingMd,
+      ),
       child: Column(
         children: [
           HeatmapNavigation(
@@ -94,7 +101,8 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: intensitiesByDate,
               gradient: widget.gradient,
-              onCellTap: (date, value) => _showEntryEditor(context, date, value),
+              onCellTap: (date, value) =>
+                  _showEntryEditor(context, date, value),
             ),
             loading: () => const Center(
               child: Padding(
@@ -107,7 +115,8 @@ class _YearHeatmapContentState extends ConsumerState<YearHeatmapContent> {
               entriesByDate: widget.entriesByDate,
               intensitiesByDate: const {},
               gradient: widget.gradient,
-              onCellTap: (date, value) => _showEntryEditor(context, date, value),
+              onCellTap: (date, value) =>
+                  _showEntryEditor(context, date, value),
             ),
           ),
         ],

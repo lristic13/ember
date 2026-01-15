@@ -7,11 +7,7 @@ class HabitEmoji extends StatelessWidget {
   final String? emoji;
   final Color? color;
 
-  const HabitEmoji({
-    super.key,
-    this.emoji,
-    this.color,
-  });
+  const HabitEmoji({super.key, this.emoji, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +20,7 @@ class HabitEmoji extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         alignment: Alignment.center,
-        child: Text(
-          emoji!,
-          style: const TextStyle(fontSize: 24),
-        ),
+        child: Text(emoji!, style: const TextStyle(fontSize: 24)),
       );
     }
 
@@ -39,10 +32,14 @@ class HabitEmoji extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
       alignment: Alignment.center,
-      child: const Icon(
+      child: Icon(
         Icons.local_fire_department,
         color: AppColors.textPrimary,
         size: AppDimensions.iconMd,
+        shadows: [
+          Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 8),
+          Shadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 4),
+        ],
       ),
     );
   }

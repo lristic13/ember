@@ -35,8 +35,15 @@ class HabitDetailsContent extends ConsumerWidget {
     );
     final entriesAsync = ref.watch(allHabitEntriesProvider(habit.id));
 
+    final topPadding = MediaQuery.of(context).padding.top;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppDimensions.paddingMd),
+      padding: EdgeInsets.only(
+        top: topPadding + AppDimensions.paddingMd,
+        left: AppDimensions.paddingMd,
+        right: AppDimensions.paddingMd,
+        bottom: AppDimensions.paddingMd,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -54,7 +61,8 @@ class HabitDetailsContent extends ConsumerWidget {
               habitId: habit.id,
               entriesByDate: entriesByDate,
               gradient: habit.gradient,
-              onCellTap: (date, value) => _showEntryEditor(context, date, value),
+              onCellTap: (date, value) =>
+                  _showEntryEditor(context, date, value),
             ),
             loading: () => const Center(
               child: Padding(
