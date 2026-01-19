@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/tracking_type.dart';
@@ -10,14 +9,14 @@ import 'statistic_item.dart';
 class HabitStatisticsCard extends StatelessWidget {
   final HabitStatisticsState state;
   final String? unit;
-  final Color accentColor;
+  final Color? accentColor;
   final TrackingType? trackingType;
 
   const HabitStatisticsCard({
     super.key,
     required this.state,
     this.unit,
-    this.accentColor = AppColors.accent,
+    this.accentColor,
     this.trackingType,
   });
 
@@ -46,6 +45,7 @@ class HabitStatisticsCard extends StatelessWidget {
     }
 
     final stats = state as HabitStatisticsLoaded;
+    final effectiveAccentColor = accentColor ?? Theme.of(context).colorScheme.primary;
 
     final showBestDay = trackingType == TrackingType.quantity &&
         stats.bestDay != null;
@@ -60,7 +60,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.currentStreak,
                 value: _formatStreak(stats.currentStreak),
                 unit: _streakUnit(stats.currentStreak),
-                valueColor: accentColor,
+                valueColor: effectiveAccentColor,
               ),
             ),
             const SizedBox(width: AppDimensions.paddingSm),
@@ -69,7 +69,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.longestStreak,
                 value: _formatStreak(stats.longestStreak),
                 unit: _streakUnit(stats.longestStreak),
-                valueColor: accentColor,
+                valueColor: effectiveAccentColor,
               ),
             ),
           ],
@@ -82,7 +82,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.totalLogged,
                 value: _formatNumber(stats.totalLogged),
                 unit: unit ?? '',
-                valueColor: accentColor,
+                valueColor: effectiveAccentColor,
               ),
             ),
             const SizedBox(width: AppDimensions.paddingSm),
@@ -91,7 +91,7 @@ class HabitStatisticsCard extends StatelessWidget {
                 label: AppStrings.dailyAverage,
                 value: _formatNumber(stats.dailyAverage),
                 unit: unit ?? '',
-                valueColor: accentColor,
+                valueColor: effectiveAccentColor,
               ),
             ),
           ],
@@ -104,7 +104,7 @@ class HabitStatisticsCard extends StatelessWidget {
               child: StatisticItem(
                 label: AppStrings.bestDay,
                 value: stats.bestDay!,
-                valueColor: accentColor,
+                valueColor: effectiveAccentColor,
               ),
             ),
           ),

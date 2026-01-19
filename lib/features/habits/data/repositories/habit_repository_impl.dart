@@ -181,4 +181,16 @@ class HabitRepositoryImpl implements HabitRepository {
       return Err(UnexpectedFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Result<void, Failure>> deleteAllEntries() async {
+    try {
+      await _localDatasource.deleteAllEntries();
+      return const Success(null);
+    } on DatabaseException catch (e) {
+      return Err(DatabaseFailure(e.message));
+    } catch (e) {
+      return Err(UnexpectedFailure(e.toString()));
+    }
+  }
 }

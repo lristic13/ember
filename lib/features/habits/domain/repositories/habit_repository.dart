@@ -50,4 +50,7 @@ abstract class HabitRepository {
 
   /// Deletes an entry.
   Future<Result<void, Failure>> deleteEntry(String entryId);
+
+  /// Deletes all entries for all habits.
+  Future<Result<void, Failure>> deleteAllEntries();
 }

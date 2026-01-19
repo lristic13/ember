@@ -9,7 +9,8 @@ import 'habits_providers.dart';
 part 'intensity_viewmodel.g.dart';
 
 /// Provider that calculates batch intensities for a date range.
-@riverpod
+/// Uses keepAlive to cache results when switching between years.
+@Riverpod(keepAlive: true)
 Future<Map<DateTime, double>> habitIntensities(
   Ref ref,
   String habitId, {
@@ -28,22 +29,23 @@ Future<Map<DateTime, double>> habitIntensities(
     endDate: endDate,
   );
 
-  return result.fold(
-    (failure) => <DateTime, double>{},
-    (entries) {
-      // Generate list of target dates
-      final targetDates = <DateTime>[];
-      var current = DateUtils.dateOnly(startDate);
-      final normalizedEnd = DateUtils.dateOnly(endDate);
-      while (!current.isAfter(normalizedEnd)) {
-        targetDates.add(current);
-        current = current.add(const Duration(days: 1));
-      }
+  if (result.isFailure) {
+    return <DateTime, double>{};
+  }
 
-      return IntensityService.calculateBatchIntensities(
-        allEntries: entries,
-        targetDates: targetDates,
-      );
-    },
+  final entries = result.valueOrNull ?? [];
+
+  // Generate list of target dates
+  final targetDates = <DateTime>[];
+  var current = DateUtils.dateOnly(startDate);
+  final normalizedEnd = DateUtils.dateOnly(endDate);
+  while (!current.isAfter(normalizedEnd)) {
+    targetDates.add(current);
+    current = current.add(const Duration(days: 1));
+  }
+
+  return IntensityService.calculateBatchIntensitiesAsync(
+    allEntries: entries,
+    targetDates: targetDates,
   );
 }

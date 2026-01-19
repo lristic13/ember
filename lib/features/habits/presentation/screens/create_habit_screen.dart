@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/habit.dart';
@@ -18,6 +17,7 @@ class CreateHabitScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
+    final theme = Theme.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -27,7 +27,7 @@ class CreateHabitScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
               title: const Text(
                 AppStrings.createActivity,
                 style: TextStyle(fontWeight: FontWeight.bold),

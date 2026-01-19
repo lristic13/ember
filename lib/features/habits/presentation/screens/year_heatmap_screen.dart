@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../viewmodels/habit_entries_viewmodel.dart';
 import '../viewmodels/habits_viewmodel.dart';
@@ -18,6 +17,7 @@ class YearHeatmapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final habitAsync = ref.watch(habitByIdProvider(habitId));
     final entriesAsync = ref.watch(allHabitEntriesProvider(habitId));
+    final theme = Theme.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -27,7 +27,7 @@ class YearHeatmapScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
               title: const Text(
                 AppStrings.yearView,
                 style: TextStyle(fontWeight: FontWeight.bold),

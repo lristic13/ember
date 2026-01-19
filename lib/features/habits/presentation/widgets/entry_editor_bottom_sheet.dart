@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -120,6 +119,7 @@ class _EntryEditorBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(
         left: AppDimensions.paddingLg,
@@ -133,12 +133,14 @@ class _EntryEditorBottomSheetState
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Header
-          Text(widget.habitName, style: AppTextStyles.headlineMedium),
+          Text(widget.habitName, style: AppTextStyles.headlineMedium.copyWith(
+            color: theme.colorScheme.onSurface,
+          )),
           const SizedBox(height: AppDimensions.paddingXs),
           Text(
             _formatDate(widget.date),
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: AppDimensions.paddingLg),
@@ -186,6 +188,7 @@ class _EntryEditorBottomSheetState
   }
 
   Widget _buildQuantityUI() {
+    final theme = Theme.of(context);
     return Form(
       key: _formKey,
       child: Column(
@@ -231,12 +234,12 @@ class _EntryEditorBottomSheetState
                 child: ElevatedButton(
                   onPressed: _isSaving ? null : _saveQuantity,
                   child: _isSaving
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: AppColors.textPrimary,
+                            color: theme.colorScheme.onPrimary,
                           ),
                         )
                       : const Text(AppStrings.save),
@@ -267,6 +270,7 @@ class _CompletionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -276,11 +280,11 @@ class _CompletionButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.accent.withValues(alpha: 0.15)
-              : AppColors.surfaceLight,
+              ? theme.colorScheme.primary.withValues(alpha: 0.15)
+              : theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           border: Border.all(
-            color: isSelected ? AppColors.accent : AppColors.surfaceLight,
+            color: isSelected ? theme.colorScheme.primary : theme.dividerColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -296,13 +300,13 @@ class _CompletionButton extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: isSelected ? AppColors.accent : AppColors.textSecondary,
+                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             const SizedBox(height: AppDimensions.paddingSm),
             Text(
               label,
               style: AppTextStyles.labelMedium.copyWith(
-                color: isSelected ? AppColors.accent : AppColors.textSecondary,
+                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               textAlign: TextAlign.center,
@@ -327,7 +331,7 @@ Future<bool?> showEntryEditorBottomSheet({
   return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: AppColors.surface,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(AppDimensions.bottomSheetRadius),

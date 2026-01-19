@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/habit_gradient_presets.dart';
 import '../../../../core/constants/habit_gradients.dart';
@@ -45,6 +44,7 @@ class _GradientOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -56,11 +56,11 @@ class _GradientOption extends StatelessWidget {
           shape: BoxShape.circle,
           border: isSelected
               ? Border.all(
-                  color: AppColors.textPrimary,
+                  color: theme.colorScheme.onSurface,
                   width: 3,
                 )
               : Border.all(
-                  color: AppColors.surfaceLight,
+                  color: theme.dividerColor,
                   width: 2,
                 ),
           boxShadow: isSelected

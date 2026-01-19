@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 
@@ -18,13 +17,14 @@ class HeatmapNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
           onPressed: onPrevious,
           icon: const Icon(Icons.chevron_left),
-          color: AppColors.textSecondary,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           iconSize: AppDimensions.iconMd,
         ),
         Text(
@@ -34,7 +34,7 @@ class HeatmapNavigation extends StatelessWidget {
         IconButton(
           onPressed: onNext,
           icon: const Icon(Icons.chevron_right),
-          color: AppColors.textSecondary,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           iconSize: AppDimensions.iconMd,
         ),
       ],

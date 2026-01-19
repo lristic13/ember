@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/activity_insight.dart';
 
@@ -23,6 +22,11 @@ class InsightsBarChart extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final theme = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
+    final mutedColor = theme.colorScheme.onSurface.withValues(alpha: 0.4);
+    final surfaceLightColor = theme.colorScheme.surfaceContainerHighest;
+
     return SizedBox(
       height: 200,
       child: BarChart(
@@ -41,7 +45,7 @@ class InsightsBarChart extends StatelessWidget {
               }
             },
             touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (_) => AppColors.surface,
+              getTooltipColor: (_) => surfaceColor,
               tooltipPadding: const EdgeInsets.all(AppDimensions.paddingSm),
               tooltipMargin: 8,
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -69,8 +73,8 @@ class InsightsBarChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) {
                   return Text(
                     '${value.toInt()}%',
-                    style: const TextStyle(
-                      color: AppColors.textMuted,
+                    style: TextStyle(
+                      color: mutedColor,
                       fontSize: 10,
                     ),
                   );
@@ -104,7 +108,7 @@ class InsightsBarChart extends StatelessWidget {
             horizontalInterval: 25,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: AppColors.surfaceLight,
+                color: surfaceLightColor,
                 strokeWidth: 1,
               );
             },
@@ -129,7 +133,7 @@ class InsightsBarChart extends StatelessWidget {
                   backDrawRodData: BackgroundBarChartRodData(
                     show: true,
                     toY: 100,
-                    color: AppColors.surfaceLight,
+                    color: surfaceLightColor,
                   ),
                 ),
               ],

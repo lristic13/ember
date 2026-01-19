@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 
 class HabitEmoji extends StatelessWidget {
@@ -11,12 +10,14 @@ class HabitEmoji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (emoji != null && emoji!.isNotEmpty) {
       return Container(
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         alignment: Alignment.center,
@@ -28,13 +29,13 @@ class HabitEmoji extends StatelessWidget {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: color ?? AppColors.accent,
+        color: color ?? theme.colorScheme.primary,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
       ),
       alignment: Alignment.center,
       child: Icon(
         Icons.local_fire_department,
-        color: AppColors.textPrimary,
+        color: theme.colorScheme.onSurface,
         size: AppDimensions.iconMd,
         shadows: [
           Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 8),

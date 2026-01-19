@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/app_router.dart';
 import '../viewmodels/habits_viewmodel.dart';
@@ -18,6 +17,7 @@ class HabitDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final habitAsync = ref.watch(habitByIdProvider(habitId));
+    final theme = Theme.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -27,7 +27,7 @@ class HabitDetailsScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
               title: const Text(
                 AppStrings.activityDetails,
                 style: TextStyle(fontWeight: FontWeight.bold),

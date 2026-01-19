@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../viewmodels/insights_state.dart';
@@ -20,6 +19,7 @@ class InsightsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(insightsViewModelProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -29,7 +29,7 @@ class InsightsScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
               title: const Text(
                 AppStrings.insights,
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -44,7 +44,7 @@ class InsightsScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(message, style: const TextStyle(color: AppColors.error)),
+              Text(message, style: TextStyle(color: theme.colorScheme.error)),
               const SizedBox(height: AppDimensions.paddingMd),
               ElevatedButton(
                 onPressed: () =>
@@ -104,7 +104,7 @@ class InsightsScreen extends ConsumerWidget {
                       const SizedBox(height: AppDimensions.paddingMd),
 
                       // Divider
-                      const Divider(color: AppColors.surfaceLight),
+                      Divider(color: theme.dividerColor),
                       const SizedBox(height: AppDimensions.paddingMd),
 
                       // Activity list

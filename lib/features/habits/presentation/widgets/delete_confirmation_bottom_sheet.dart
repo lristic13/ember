@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 
@@ -10,7 +9,7 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
   static Future<bool?> show(BuildContext context) {
     return showModalBottomSheet<bool>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppDimensions.bottomSheetRadius),
@@ -22,6 +21,7 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -35,15 +35,15 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: AppDimensions.paddingLg),
             Text(
               AppStrings.deleteActivityTitle,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -52,8 +52,8 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
             Text(
               AppStrings.deleteActivityMessage,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 14,
               ),
             ),
@@ -63,8 +63,8 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: AppColors.textPrimary,
+                  backgroundColor: theme.colorScheme.error,
+                  foregroundColor: theme.colorScheme.onError,
                   padding: const EdgeInsets.symmetric(
                     vertical: AppDimensions.paddingMd,
                   ),
@@ -87,7 +87,7 @@ class DeleteConfirmationBottomSheet extends StatelessWidget {
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
+                  foregroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   padding: const EdgeInsets.symmetric(
                     vertical: AppDimensions.paddingMd,
                   ),

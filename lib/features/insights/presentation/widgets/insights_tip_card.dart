@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/activity_insight.dart';
 
@@ -13,6 +12,7 @@ class InsightsTipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (insights.isEmpty) return const SizedBox.shrink();
 
+    final theme = Theme.of(context);
     final top = insights.first;
     final gradient = top.activity.gradient;
 
@@ -29,7 +29,7 @@ class InsightsTipCard extends StatelessWidget {
             child: Text.rich(
               TextSpan(
                 text: "You showed up the most for ",
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
                 children: [
                   TextSpan(
                     text: top.activity.name,
