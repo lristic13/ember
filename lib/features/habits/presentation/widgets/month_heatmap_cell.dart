@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/constants/habit_gradients.dart';
+import 'animated_fill_container.dart';
 
 class MonthHeatmapCell extends StatelessWidget {
   final int? dayNumber;
@@ -37,38 +38,37 @@ class MonthHeatmapCell extends StatelessWidget {
     final colors = gradient.getColorsForIntensity(intensity);
     final isDarkMode = theme.brightness == Brightness.dark;
 
-    // Use theme-aware color for empty cells (intensity 0)
-    // In light mode, use a light gray instead of dark gradient color
-    final cellColor = intensity <= 0 && !isDarkMode
-        ? const Color(0xFFE8E8E8)
-        : colors.cellColor;
+    // Background color for empty cells (theme-aware)
+    final backgroundColor = isDarkMode
+        ? gradient.none
+        : const Color(0xFFE8E8E8);
+
+    // Fill color from gradient
+    final fillColor = colors.cellColor;
+
+    // Show glow for high intensity
+    final showGlow = colors.glowColor != null;
+
+    final borderRadius = BorderRadius.circular(
+      AppDimensions.monthHeatMapCellRadius,
+    );
 
     return GestureDetector(
       onTap: isFuture ? null : onTap,
       child: Opacity(
         opacity: isFuture ? 0.3 : 1.0,
-        child: Container(
+        child: AnimatedFillContainer(
+          intensity: intensity,
+          fillColor: fillColor,
+          backgroundColor: backgroundColor,
+          borderRadius: borderRadius,
           width: AppDimensions.monthHeatMapCellSize,
           height: AppDimensions.monthHeatMapCellSize,
-          decoration: BoxDecoration(
-            color: cellColor,
-            borderRadius: BorderRadius.circular(
-              AppDimensions.monthHeatMapCellRadius,
-            ),
-            border: isToday
-                ? Border.all(color: gradient.primaryColor, width: 2)
-                : null,
-            boxShadow: colors.glowColor != null
-                ? [
-                    BoxShadow(
-                      color: colors.glowColor!.withValues(alpha: 0.6),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                    ),
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
+          glowColor: colors.glowColor,
+          showGlow: showGlow,
+          border: isToday
+              ? Border.all(color: gradient.primaryColor, width: 2)
+              : null,
           child: Text(
             dayNumber.toString(),
             style: AppTextStyles.labelSmall.copyWith(
