@@ -31,6 +31,9 @@ class HabitCard extends ConsumerWidget {
       openBuilder: (context, _) => HabitDetailsScreen(habitId: habit.id),
       closedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+        side: BorderSide(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+        ),
       ),
       closedColor: theme.scaffoldBackgroundColor,
       openColor: theme.scaffoldBackgroundColor,

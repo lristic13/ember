@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/habit_gradients.dart';
 import '../../../../core/utils/date_utils.dart' as date_utils;
+import 'animated_fill_container.dart';
 
 class HeatmapCell extends ConsumerWidget {
   final DateTime date;
@@ -28,40 +29,40 @@ class HeatmapCell extends ConsumerWidget {
     final isFuture = date_utils.DateUtils.isFuture(date);
     final isDarkMode = theme.brightness == Brightness.dark;
 
-    // Use theme-aware color for empty cells (intensity 0)
-    // In light mode, use a light gray instead of dark gradient color
-    final cellColor = intensity <= 0 && !isDarkMode
-        ? const Color(0xFFE8E8E8)
-        : colors.cellColor;
+    // Background color for empty cells (theme-aware)
+    final backgroundColor = isDarkMode
+        ? gradient.none
+        : const Color(0xFFE8E8E8);
+
+    // Fill color from gradient
+    final fillColor = colors.cellColor;
+
+    // Show glow for high intensity
+    final showGlow = colors.glowColor != null;
+
+    final borderRadius = BorderRadius.circular(
+      AppDimensions.weekHeatMapCellRadius,
+    );
 
     return GestureDetector(
       onTap: isFuture ? null : onTap,
       child: Opacity(
         opacity: isFuture ? 0.3 : 1.0,
-        child: Container(
+        child: AnimatedFillContainer(
+          intensity: intensity,
+          fillColor: fillColor,
+          backgroundColor: backgroundColor,
+          borderRadius: borderRadius,
           width: AppDimensions.weekHeatMapCellSize,
           height: AppDimensions.weekHeatMapCellSize,
-          decoration: BoxDecoration(
-            color: cellColor,
-            borderRadius: BorderRadius.circular(
-              AppDimensions.weekHeatMapCellRadius,
-            ),
-            border: isToday
-                ? Border.all(
-                    color: gradient.primaryColor,
-                    width: AppDimensions.weekHeatMapTodayBorderWidth,
-                  )
-                : null,
-            boxShadow: colors.glowColor != null
-                ? [
-                    BoxShadow(
-                      color: colors.glowColor!.withValues(alpha: 0.6),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : null,
-          ),
+          glowColor: colors.glowColor,
+          showGlow: showGlow,
+          border: isToday
+              ? Border.all(
+                  color: gradient.primaryColor,
+                  width: AppDimensions.weekHeatMapTodayBorderWidth,
+                )
+              : null,
         ),
       ),
     );
