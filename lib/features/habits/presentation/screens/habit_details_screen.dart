@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/app_router.dart';
+import '../../../share/presentation/providers/share_providers.dart';
+import '../../../share/presentation/widgets/share_preview_dialog.dart';
 import '../viewmodels/habits_viewmodel.dart';
 import '../widgets/habit_details_content.dart';
 
@@ -33,6 +35,17 @@ class HabitDetailsScreen extends ConsumerWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               actions: [
+                habitAsync.maybeWhen(
+                  data: (habit) {
+                    if (habit == null) return const SizedBox.shrink();
+                    return IconButton(
+                      icon: const Icon(Icons.share),
+                      tooltip: 'Share',
+                      onPressed: () => _showShareDialog(context, ref, habit),
+                    );
+                  },
+                  orElse: () => const SizedBox.shrink(),
+                ),
                 IconButton(
                   icon: const Icon(Icons.edit),
                   tooltip: AppStrings.edit,
@@ -55,5 +68,30 @@ class HabitDetailsScreen extends ConsumerWidget {
         error: (error, _) => Center(child: Text('Error: $error')),
       ),
     );
+  }
+
+  Future<void> _showShareDialog(BuildContext context, WidgetRef ref, habit) async {
+    final shareUseCase = ref.read(shareHeatMapProvider);
+
+    // Get years with data
+    final years = await shareUseCase.getYearsWithData(habit.id);
+
+    // Default to current year or first available year
+    final currentYear = DateTime.now().year;
+    final initialYear = years.contains(currentYear)
+        ? currentYear
+        : (years.isNotEmpty ? years.first : currentYear);
+
+    // Ensure we have at least the current year in the list
+    final availableYears = years.isNotEmpty ? years : [currentYear];
+
+    if (context.mounted) {
+      await SharePreviewDialog.show(
+        context: context,
+        habit: habit,
+        initialYear: initialYear,
+        availableYears: availableYears,
+      );
+    }
   }
 }

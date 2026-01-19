@@ -7,12 +7,14 @@ class HeatmapNavigation extends StatelessWidget {
   final String title;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  final Widget? trailing;
 
   const HeatmapNavigation({
     super.key,
     required this.title,
     required this.onPrevious,
     required this.onNext,
+    this.trailing,
   });
 
   @override
@@ -31,11 +33,17 @@ class HeatmapNavigation extends StatelessWidget {
           title,
           style: AppTextStyles.titleLarge,
         ),
-        IconButton(
-          onPressed: onNext,
-          icon: const Icon(Icons.chevron_right),
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-          iconSize: AppDimensions.iconMd,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: onNext,
+              icon: const Icon(Icons.chevron_right),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              iconSize: AppDimensions.iconMd,
+            ),
+            if (trailing != null) trailing!,
+          ],
         ),
       ],
     );

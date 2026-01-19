@@ -105,22 +105,31 @@ abstract class StatisticsCalculator {
   /// Calculates the best day of the week based on highest average value.
   /// Returns the weekday name (e.g., "Monday") or null if no entries.
   /// Ties go to the earliest weekday (Monday first).
+  ///
+  /// First groups entries by specific date (summing multiple entries per day),
+  /// then calculates the average for each day of the week.
   static String? calculateBestDay(List<HabitEntry> entries) {
     if (entries.isEmpty) return null;
 
-    // Group entries by weekday and calculate totals/counts
+    // First, group entries by specific date to get daily totals
+    final dailyTotals = <DateTime, double>{};
+    for (final entry in entries) {
+      if (entry.value <= 0) continue;
+      final date = DateUtils.dateOnly(entry.date);
+      dailyTotals[date] = (dailyTotals[date] ?? 0) + entry.value;
+    }
+
+    if (dailyTotals.isEmpty) return null;
+
+    // Then aggregate by day of week
     final weekdayTotals = <int, double>{};
     final weekdayCounts = <int, int>{};
 
-    for (final entry in entries) {
-      if (entry.value <= 0) continue;
-
-      final weekday = entry.date.weekday; // 1=Monday, 7=Sunday
+    for (final entry in dailyTotals.entries) {
+      final weekday = entry.key.weekday; // 1=Monday, 7=Sunday
       weekdayTotals[weekday] = (weekdayTotals[weekday] ?? 0) + entry.value;
       weekdayCounts[weekday] = (weekdayCounts[weekday] ?? 0) + 1;
     }
-
-    if (weekdayTotals.isEmpty) return null;
 
     // Calculate averages and find best day
     int? bestWeekday;
