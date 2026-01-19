@@ -43,12 +43,8 @@ class YearHeatmapScreen extends ConsumerWidget {
           }
           return entriesAsync.when(
             data: (entriesByDate) => YearHeatmapContent(
-              habitId: habitId,
-              habitName: habit.name,
-              trackingType: habit.trackingType,
-              unit: habit.unit,
+              habit: habit,
               entriesByDate: entriesByDate,
-              gradient: habit.gradient,
             ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (_, __) => const Center(child: Text('Error loading data')),
