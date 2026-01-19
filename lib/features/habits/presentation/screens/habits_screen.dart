@@ -2,15 +2,14 @@ import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:ember/core/constants/app_text_styles.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/app_router.dart';
+import '../../../../core/theme/theme_provider.dart';
 import 'create_habit_screen.dart';
 import '../viewmodels/habits_providers.dart';
 import '../viewmodels/habits_state.dart';
@@ -29,9 +28,10 @@ class HabitsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
+    final theme = Theme.of(context);
     await showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -45,7 +45,7 @@ class HabitsScreen extends ConsumerWidget {
               Text(
                 'Debug Tools',
                 style: TextStyle(
-                  color: AppColors.textSecondary,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -70,7 +70,7 @@ class HabitsScreen extends ConsumerWidget {
                         _clearAllData(context, ref);
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.error,
+                        foregroundColor: theme.colorScheme.error,
                       ),
                       child: const Text('Clear All Data'),
                     ),
@@ -88,10 +88,11 @@ class HabitsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
+    final theme = Theme.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: theme.colorScheme.surface,
         title: const Text('Generate Mock Data?'),
         content: const Text(
           'This will create entries for all activities from January 2025 to today. '
@@ -139,10 +140,11 @@ class HabitsScreen extends ConsumerWidget {
   }
 
   static Future<void> _clearAllData(BuildContext context, WidgetRef ref) async {
+    final theme = Theme.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: theme.colorScheme.surface,
         title: const Text('Clear All Entries?'),
         content: const Text(
           'This will delete ALL entries for all activities. '
@@ -155,7 +157,7 @@ class HabitsScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
             child: const Text('Delete Everything'),
           ),
         ],
@@ -188,6 +190,8 @@ class HabitsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(habitsViewModelProvider);
     final viewMode = ref.watch(habitsViewModeNotifierProvider);
+    final isDarkMode = ref.watch(themeNotifierProvider) == ThemeMode.dark;
+    final theme = Theme.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -198,10 +202,19 @@ class HabitsScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: AppColors.background.withValues(alpha: 0.7),
+              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
+              leading: IconButton(
+                icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+                tooltip: isDarkMode ? 'Switch to light mode' : 'Switch to dark mode',
+                onPressed: () {
+                  ref.read(themeNotifierProvider.notifier).toggle();
+                },
+              ),
               title: Text(
                 AppStrings.appName,
-                style: AppTextStyles.headlineLarge,
+                style: AppTextStyles.headlineLarge.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
               actions: [
                 IconButton(
@@ -251,7 +264,7 @@ class HabitsScreen extends ConsumerWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            color: AppColors.background.withValues(alpha: 0.7),
+            color: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(AppDimensions.paddingMd),
@@ -264,15 +277,15 @@ class HabitsScreen extends ConsumerWidget {
                     openBuilder: (context, _) => const CreateHabitScreen(),
                     closedShape: RoundedRectangleBorder(
                       side: BorderSide(
-                        color: AppColors.textPrimary.withValues(alpha: 0.3),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                       ),
                       borderRadius: BorderRadius.circular(
                         AppDimensions.radiusMd,
                       ),
                     ),
-                    closedColor: AppColors.surface.withValues(alpha: 0.5),
-                    openColor: AppColors.background,
-                    middleColor: AppColors.background,
+                    closedColor: theme.colorScheme.surface.withValues(alpha: 0.5),
+                    openColor: theme.scaffoldBackgroundColor,
+                    middleColor: theme.scaffoldBackgroundColor,
                     closedElevation: 0,
                     openElevation: 0,
                     closedBuilder: (context, openContainer) => Container(
@@ -284,12 +297,12 @@ class HabitsScreen extends ConsumerWidget {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            AppColors.surface.withValues(alpha: 0.6),
-                            AppColors.surface.withValues(alpha: 0.3),
+                            theme.colorScheme.surface.withValues(alpha: 0.6),
+                            theme.colorScheme.surface.withValues(alpha: 0.3),
                           ],
                         ),
                         border: Border.all(
-                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                         ),
                       ),
                       child: Material(
@@ -302,11 +315,11 @@ class HabitsScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(
                             AppDimensions.radiusMd,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               AppStrings.addActivity,
                               style: TextStyle(
-                                color: AppColors.textPrimary,
+                                color: theme.colorScheme.onSurface,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

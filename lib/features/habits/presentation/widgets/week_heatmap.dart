@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/constants/habit_gradients.dart';
@@ -52,7 +51,7 @@ class WeekHeatmap extends ConsumerWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.labelSmall.copyWith(
-                  color: AppColors.textMuted,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
             );

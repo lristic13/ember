@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 
@@ -15,7 +14,7 @@ class HabitOptionsBottomSheet extends StatelessWidget {
   static Future<HabitOptionResult?> show(BuildContext context) {
     return showModalBottomSheet<HabitOptionResult>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppDimensions.bottomSheetRadius),
@@ -27,6 +26,7 @@ class HabitOptionsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -40,7 +40,7 @@ class HabitOptionsBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -48,8 +48,8 @@ class HabitOptionsBottomSheet extends StatelessWidget {
             _OptionTile(
               icon: Icons.delete_outline,
               label: AppStrings.deleteActivity,
-              iconColor: AppColors.error,
-              labelColor: AppColors.error,
+              iconColor: theme.colorScheme.error,
+              labelColor: theme.colorScheme.error,
               onTap: () => Navigator.of(context).pop(HabitOptionResult.delete),
             ),
             const SizedBox(height: AppDimensions.paddingSm),
@@ -82,8 +82,9 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Material(
-      color: AppColors.surfaceLight,
+      color: theme.colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
       child: InkWell(
         onTap: onTap,
@@ -97,14 +98,14 @@ class _OptionTile extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: iconColor ?? AppColors.textPrimary,
+                color: iconColor ?? theme.colorScheme.onSurface,
                 size: AppDimensions.iconMd,
               ),
               const SizedBox(width: AppDimensions.paddingMd),
               Text(
                 label,
                 style: TextStyle(
-                  color: labelColor ?? AppColors.textPrimary,
+                  color: labelColor ?? theme.colorScheme.onSurface,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),

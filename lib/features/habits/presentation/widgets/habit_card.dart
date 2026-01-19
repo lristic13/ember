@@ -2,7 +2,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../domain/entities/habit.dart';
@@ -25,6 +24,7 @@ class HabitCard extends ConsumerWidget {
     final entriesState = ref.watch(habitEntriesViewModelProvider(habit.id));
     final todayValue = _getTodayValue(entriesState);
 
+    final theme = Theme.of(context);
     return OpenContainer(
       transitionType: ContainerTransitionType.fadeThrough,
       transitionDuration: const Duration(milliseconds: 400),
@@ -32,9 +32,9 @@ class HabitCard extends ConsumerWidget {
       closedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
       ),
-      closedColor: AppColors.surface,
-      openColor: AppColors.background,
-      middleColor: AppColors.surface,
+      closedColor: theme.scaffoldBackgroundColor,
+      openColor: theme.scaffoldBackgroundColor,
+      middleColor: theme.scaffoldBackgroundColor,
       closedElevation: 1,
       openElevation: 0,
       closedBuilder: (context, openContainer) => _HabitCardContent(
@@ -84,7 +84,7 @@ class HabitCard extends ConsumerWidget {
   }
 }
 
-class _HabitCardContent extends StatelessWidget {
+class _HabitCardContent extends ConsumerWidget {
   final Habit habit;
   final double todayValue;
   final VoidCallback onTap;
@@ -100,7 +100,7 @@ class _HabitCardContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
@@ -121,7 +121,12 @@ class _HabitCardContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(habit.name, style: AppTextStyles.titleLarge),
+                      Text(
+                        habit.name,
+                        style: AppTextStyles.titleLarge.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
                       const SizedBox(height: AppDimensions.marginXs),
                       HabitProgressIndicator(
                         currentValue: todayValue,

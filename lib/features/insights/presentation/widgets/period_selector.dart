@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/insights_period.dart';
 
@@ -17,7 +16,7 @@ class PeriodSelector extends StatelessWidget {
   Future<void> _showPeriodSheet(BuildContext context) async {
     final result = await showModalBottomSheet<InsightsPeriod>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppDimensions.bottomSheetRadius),
@@ -33,6 +32,7 @@ class PeriodSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => _showPeriodSheet(context),
       child: Container(
@@ -41,24 +41,24 @@ class PeriodSelector extends StatelessWidget {
           vertical: AppDimensions.paddingSm,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-          border: Border.all(color: AppColors.surfaceLight),
+          border: Border.all(color: theme.dividerColor),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               selectedPeriod.label,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
                 fontSize: 16,
               ),
             ),
             const SizedBox(width: AppDimensions.paddingSm),
-            const Icon(
+            Icon(
               Icons.keyboard_arrow_down,
-              color: AppColors.textSecondary,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ],
         ),
@@ -74,6 +74,7 @@ class _PeriodBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -87,7 +88,7 @@ class _PeriodBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -97,7 +98,7 @@ class _PeriodBottomSheet extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: AppDimensions.paddingSm),
                 child: Material(
-                  color: isSelected ? AppColors.accent.withValues(alpha: 0.1) : AppColors.surfaceLight,
+                  color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
                   child: InkWell(
                     onTap: () => Navigator.of(context).pop(period),
@@ -113,16 +114,16 @@ class _PeriodBottomSheet extends StatelessWidget {
                             child: Text(
                               period.label,
                               style: TextStyle(
-                                color: isSelected ? AppColors.accent : AppColors.textPrimary,
+                                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
                                 fontSize: 16,
                                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                               ),
                             ),
                           ),
                           if (isSelected)
-                            const Icon(
+                            Icon(
                               Icons.check,
-                              color: AppColors.accent,
+                              color: theme.colorScheme.primary,
                               size: AppDimensions.iconMd,
                             ),
                         ],

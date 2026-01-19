@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/activity_insight.dart';
 
@@ -18,6 +17,7 @@ class ActivityConsistencyItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final gradient = insight.activity.gradient;
 
     return GestureDetector(
@@ -28,11 +28,11 @@ class ActivityConsistencyItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: isHighlighted
               ? gradient.max.withValues(alpha: 0.1)
-              : AppColors.surface,
+              : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           border: isHighlighted
               ? Border.all(color: gradient.max, width: 1)
-              : null,
+              : Border.all(color: theme.dividerColor),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,8 +48,8 @@ class ActivityConsistencyItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     insight.activity.name,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -70,7 +70,7 @@ class ActivityConsistencyItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
               child: LinearProgressIndicator(
                 value: insight.consistencyPercent / 100,
-                backgroundColor: AppColors.surfaceLight,
+                backgroundColor: theme.dividerColor,
                 valueColor: AlwaysStoppedAnimation(gradient.max),
                 minHeight: 8,
               ),
@@ -80,8 +80,8 @@ class ActivityConsistencyItem extends StatelessWidget {
             // Days logged
             Text(
               '${insight.daysLogged} of ${insight.totalDays} days',
-              style: const TextStyle(
-                color: AppColors.textMuted,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 fontSize: 12,
               ),
             ),

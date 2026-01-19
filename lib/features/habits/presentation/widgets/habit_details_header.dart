@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../domain/entities/habit.dart';
@@ -13,20 +12,23 @@ class HabitDetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         HabitEmoji(emoji: habit.emoji, color: habit.gradient.primaryColor),
         const SizedBox(height: AppDimensions.paddingMd),
         Text(
           habit.name,
-          style: AppTextStyles.headlineLarge,
+          style: AppTextStyles.headlineLarge.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppDimensions.paddingXs),
         Text(
           habit.isQuantity ? 'Tracking: ${habit.unit}' : 'Tracking: Yes / No',
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
           textAlign: TextAlign.center,
         ),

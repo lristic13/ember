@@ -4,6 +4,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'features/habits/data/datasources/habit_local_datasource.dart';
 import 'features/habits/data/models/habit_entry_model.dart';
 import 'features/habits/data/models/habit_model.dart';
@@ -26,15 +27,19 @@ Future<void> _initializeHive() async {
   await Hive.openBox<HabitEntryModel>(HabitLocalDatasourceImpl.entriesBoxName);
 }
 
-class EmberApp extends StatelessWidget {
+class EmberApp extends ConsumerWidget {
   const EmberApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeNotifierProvider);
+
     return MaterialApp.router(
       title: 'ember.',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       routerConfig: appRouter,
     );
   }

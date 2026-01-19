@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../domain/entities/tracking_type.dart';
@@ -40,11 +39,12 @@ class HabitProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasValue = currentValue > 0;
+    final theme = Theme.of(context);
 
     return Text(
       _getText(),
       style: AppTextStyles.bodySmall.copyWith(
-        color: hasValue ? color : AppColors.textSecondary,
+        color: hasValue ? color : theme.colorScheme.onSurface.withValues(alpha: 0.6),
         fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
       ),
     );

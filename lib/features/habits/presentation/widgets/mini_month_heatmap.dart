@@ -79,15 +79,16 @@ class MiniMonthHeatmap extends StatelessWidget {
         builder: (context, constraints) {
           const spacing = AppDimensions.miniMonthCellSpacing;
           final cellSize = (constraints.maxWidth - (6 * spacing)) / 7;
-          return _buildExpandedGrid(calendarGrid, today, cellSize, spacing);
+          return _buildExpandedGrid(context, calendarGrid, today, cellSize, spacing);
         },
       );
     }
 
-    return _buildFixedGrid(calendarGrid, today);
+    return _buildFixedGrid(context, calendarGrid, today);
   }
 
   Widget _buildExpandedGrid(
+    BuildContext context,
     List<List<DateTime?>> calendarGrid,
     DateTime today,
     double cellSize,
@@ -109,7 +110,7 @@ class MiniMonthHeatmap extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: week.map((date) {
-                return _buildCell(date, today, cellSize);
+                return _buildCell(context, date, today, cellSize);
               }).toList(),
             ),
           );
@@ -118,7 +119,7 @@ class MiniMonthHeatmap extends StatelessWidget {
     );
   }
 
-  Widget _buildFixedGrid(List<List<DateTime?>> calendarGrid, DateTime today) {
+  Widget _buildFixedGrid(BuildContext context, List<List<DateTime?>> calendarGrid, DateTime today) {
     const cellSize = AppDimensions.miniMonthCellSize;
     const spacing = AppDimensions.miniMonthCellSpacing;
 
@@ -145,7 +146,7 @@ class MiniMonthHeatmap extends StatelessWidget {
                 }
                 return Container(
                   margin: const EdgeInsets.only(right: spacing),
-                  child: _buildCell(date, today, cellSize),
+                  child: _buildCell(context, date, today, cellSize),
                 );
               }).toList(),
             ),
@@ -155,16 +156,24 @@ class MiniMonthHeatmap extends StatelessWidget {
     );
   }
 
-  Widget _buildCell(DateTime? date, DateTime today, double cellSize) {
+  Widget _buildCell(BuildContext context, DateTime? date, DateTime today, double cellSize) {
     if (date == null) {
       return SizedBox(width: cellSize, height: cellSize);
     }
 
+    final theme = Theme.of(context);
     final value = _getValueForDate(date);
     final intensity = _getIntensityForDate(date);
     final colors = gradient.getColorsForIntensity(intensity);
     final isToday = date_utils.DateUtils.isSameDay(date, today);
     final isFuture = date_utils.DateUtils.isFuture(date);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    // Use theme-aware color for empty cells (intensity 0)
+    // In light mode, use a light gray instead of dark gradient color
+    final cellColor = intensity <= 0 && !isDarkMode
+        ? const Color(0xFFE8E8E8)
+        : colors.cellColor;
 
     return GestureDetector(
       onTap: isFuture ? null : (onCellTap != null ? () => onCellTap!(date, value) : null),
@@ -174,7 +183,7 @@ class MiniMonthHeatmap extends StatelessWidget {
           width: cellSize,
           height: cellSize,
           decoration: BoxDecoration(
-            color: colors.cellColor,
+            color: cellColor,
             borderRadius: BorderRadius.circular(AppDimensions.miniMonthCellRadius),
             border: isToday
                 ? Border.all(color: gradient.primaryColor, width: 1)
