@@ -128,7 +128,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient ruby = HabitGradient(
     id: 'ruby',
     name: 'Ruby',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF3D1515),
     medium: Color(0xFF6B2222),
     high: Color(0xFFB83A3A),
@@ -140,7 +140,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient peach = HabitGradient(
     id: 'peach',
     name: 'Peach',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF3D2A22),
     medium: Color(0xFF6B4A3A),
     high: Color(0xFFB87A62),
@@ -152,7 +152,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient lime = HabitGradient(
     id: 'lime',
     name: 'Lime',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF2A3D17),
     medium: Color(0xFF4A6B22),
     high: Color(0xFF7AB830),
@@ -164,7 +164,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient sky = HabitGradient(
     id: 'sky',
     name: 'Sky',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF17303D),
     medium: Color(0xFF22526B),
     high: Color(0xFF4A90B8),
@@ -176,7 +176,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient violet = HabitGradient(
     id: 'violet',
     name: 'Violet',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF1F1739),
     medium: Color(0xFF352566),
     high: Color(0xFF5A3DB8),
@@ -188,7 +188,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient magenta = HabitGradient(
     id: 'magenta',
     name: 'Magenta',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF3D1728),
     medium: Color(0xFF6B2245),
     high: Color(0xFFB83070),
@@ -200,7 +200,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient amber = HabitGradient(
     id: 'amber',
     name: 'Amber',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF3D2E0F),
     medium: Color(0xFF6B5010),
     high: Color(0xFFB88A00),
@@ -212,7 +212,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient sage = HabitGradient(
     id: 'sage',
     name: 'Sage',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF1E2E20),
     medium: Color(0xFF3A5C3E),
     high: Color(0xFF6B9970),
@@ -224,7 +224,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient slate = HabitGradient(
     id: 'slate',
     name: 'Slate',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF1E2528),
     medium: Color(0xFF3D4F56),
     high: Color(0xFF607D8B),
@@ -236,7 +236,7 @@ abstract class HabitGradientPresets {
   static const HabitGradient copper = HabitGradient(
     id: 'copper',
     name: 'Copper',
-    none: Color(0xFF1A1A1E),
+    none: Color(0xFF252529),
     low: Color(0xFF2E2117),
     medium: Color(0xFF5C3D26),
     high: Color(0xFF8B5E34),

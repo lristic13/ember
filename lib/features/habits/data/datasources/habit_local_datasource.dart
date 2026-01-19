@@ -30,6 +30,7 @@ abstract class HabitLocalDatasource {
   });
   Future<void> deleteEntry(String entryId);
   Future<void> deleteEntriesForHabit(String habitId);
+  Future<void> deleteAllEntries();
 }
 
 class HabitLocalDatasourceImpl implements HabitLocalDatasource {
@@ -232,6 +233,15 @@ class HabitLocalDatasourceImpl implements HabitLocalDatasource {
       }
     } catch (e) {
       throw DatabaseException('Failed to delete entries for habit: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteAllEntries() async {
+    try {
+      await _entriesBox.clear();
+    } catch (e) {
+      throw DatabaseException('Failed to delete all entries: $e');
     }
   }
 }

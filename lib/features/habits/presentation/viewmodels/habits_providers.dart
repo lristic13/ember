@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
 
+import '../../../../core/utils/mock_data_generator.dart';
 import '../../data/datasources/habit_local_datasource.dart';
 import '../../data/models/habit_model.dart';
 import '../../data/models/habit_entry_model.dart';
@@ -64,4 +65,10 @@ final getHabitEntriesUseCaseProvider = Provider<GetHabitEntries>((ref) {
 final logHabitEntryUseCaseProvider = Provider<LogHabitEntry>((ref) {
   final repository = ref.watch(habitRepositoryProvider);
   return LogHabitEntry(repository);
+});
+
+// Mock data generator provider (for debug purposes)
+final mockDataGeneratorProvider = Provider<MockDataGenerator>((ref) {
+  final repository = ref.watch(habitRepositoryProvider);
+  return MockDataGenerator(repository);
 });
