@@ -90,6 +90,26 @@ struct Provider: AppIntentTimelineProvider {
             return EmberEntry.notConfigured
         }
 
+        // Handle weekValues as either [Double] or [Int]
+        let weekValuesRaw = json["weekValues"] as? [Any] ?? []
+        let weekValues: [Double] = weekValuesRaw.isEmpty
+            ? Array(repeating: 0, count: 7)
+            : weekValuesRaw.map { value -> Double in
+                if let doubleVal = value as? Double { return doubleVal }
+                if let intVal = value as? Int { return Double(intVal) }
+                return 0.0
+            }
+
+        // Handle todayValue as either Double or Int
+        let todayValue: Double
+        if let doubleVal = json["todayValue"] as? Double {
+            todayValue = doubleVal
+        } else if let intVal = json["todayValue"] as? Int {
+            todayValue = Double(intVal)
+        } else {
+            todayValue = 0
+        }
+
         return EmberEntry(
             date: Date(),
             activityId: json["id"] as? String ?? "",
@@ -97,9 +117,9 @@ struct Provider: AppIntentTimelineProvider {
             emoji: json["emoji"] as? String,
             isCompletion: json["isCompletion"] as? Bool ?? false,
             unit: json["unit"] as? String,
-            todayValue: json["todayValue"] as? Double ?? 0,
+            todayValue: todayValue,
             currentStreak: json["currentStreak"] as? Int ?? 0,
-            weekValues: (json["weekValues"] as? [Double]) ?? Array(repeating: 0, count: 7),
+            weekValues: weekValues,
             gradientId: json["gradientId"] as? String ?? "ember",
             isPlaceholder: false,
             notFound: false
@@ -159,79 +179,60 @@ struct EmberWidgetEntryView: View {
     }
 
     private var mainView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // Header: emoji + name
-            HStack(spacing: 6) {
-                if let emoji = entry.emoji {
-                    Text(emoji)
-                        .font(.title3)
-                }
-                Text(entry.name)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                Spacer()
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            // Top row: Activity name/status + Quick log button
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.name)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
 
-            // Status + streak
-            HStack {
-                Text(statusText)
-                    .font(.subheadline)
-                    .foregroundColor(Color(white: 0.6))
-                    .lineLimit(1)
+                    Text(statusText)
+                        .font(.subheadline)
+                        .foregroundColor(Color(white: 0.6))
+                        .lineLimit(1)
+                }
+
                 Spacer()
-                if entry.currentStreak > 0 {
-                    HStack(spacing: 2) {
-                        Text("🔥")
-                            .font(.caption)
-                        Text("\(entry.currentStreak)")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .foregroundColor(gradientColor)
+
+                Button(intent: QuickLogIntent(activityId: entry.activityId, isCompletion: entry.isCompletion)) {
+                    ZStack {
+                        Circle()
+                            .fill(gradientColor)
+                            .frame(width: 32, height: 32)
+                        Text(entry.isCompletion ? "✓" : "+")
+                            .font(.body)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
                     }
                 }
+                .buttonStyle(.plain)
             }
 
-            Spacer(minLength: 4)
-
-            // Mini heat map (current week)
-            HStack(spacing: 3) {
-                ForEach(0..<7, id: \.self) { index in
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(cellColor(for: entry.weekValues[index]))
-                        .frame(maxWidth: .infinity)
-                        .aspectRatio(1, contentMode: .fit)
-                }
-            }
+            Spacer()
 
             // Day labels
             HStack(spacing: 3) {
                 ForEach(["M", "T", "W", "T", "F", "S", "S"], id: \.self) { day in
                     Text(day)
-                        .font(.system(size: 8))
-                        .foregroundColor(Color(white: 0.45))
+                        .font(.system(size: 10))
+                        .foregroundColor(Color(white: 0.5))
                         .frame(maxWidth: .infinity)
                 }
             }
 
-            Spacer(minLength: 4)
+            Spacer().frame(height: 4)
 
-            // Action button
-            HStack {
-                Spacer()
-                Link(destination: URL(string: "ember://log?habitId=\(entry.activityId)")!) {
-                    ZStack {
-                        Circle()
-                            .fill(gradientColor)
-                            .frame(width: 36, height: 36)
-                        Text(entry.isCompletion ? "✓" : "+")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    }
+            // Heat map cells
+            HStack(spacing: 3) {
+                ForEach(0..<7, id: \.self) { index in
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(cellColor(for: entry.weekValues[index]))
+                        .frame(height: 24)
+                        .frame(maxWidth: .infinity)
                 }
-                Spacer()
             }
         }
         .padding(12)
