@@ -9,4 +9,5 @@
     android:updatePeriodMillis="900000"
     android:widgetCategory="home_screen"
     android:configure="com.lristic.ember.EmberWidgetConfigActivity"
-    android:description="@string/widget_description" />
+    android:description="@string/widget_description"
+    android:previewImage="@drawable/widget_preview" />
