@@ -37,6 +37,49 @@ class HomeWidgetService {
 
     // Register callback for when widget is tapped
     HomeWidget.widgetClicked.listen(_handleWidgetClick);
+
+    // Sync any pending widget logs to the database
+    await _syncPendingWidgetLogs();
+  }
+
+  /// Sync pending widget logs from UserDefaults to the database.
+  /// This handles logs made via the widget's quick-log button.
+  /// Call this when app comes to foreground.
+  /// Returns true if there were pending logs that were synced.
+  Future<bool> syncPendingWidgetLogs() async {
+    return await _syncPendingWidgetLogs();
+  }
+
+  Future<bool> _syncPendingWidgetLogs() async {
+    final pendingLogsJson = await HomeWidget.getWidgetData<String>('pending_widget_logs');
+    if (pendingLogsJson == null) return false;
+
+    try {
+      final pendingLogs = jsonDecode(pendingLogsJson) as List<dynamic>?;
+      if (pendingLogs == null || pendingLogs.isEmpty) return false;
+
+      for (final log in pendingLogs) {
+        final habitId = log['habitId'] as String?;
+        final value = (log['value'] as num?)?.toDouble();
+
+        if (habitId != null && value != null) {
+          final today = app_date_utils.DateUtils.dateOnly(DateTime.now());
+          await _habitRepository.logEntry(
+            habitId: habitId,
+            date: today,
+            value: value,
+          );
+        }
+      }
+
+      // Clear pending logs after syncing
+      await HomeWidget.saveWidgetData('pending_widget_logs', null);
+      return true;
+    } catch (e) {
+      // Ignore parsing errors, just clear the pending logs
+      await HomeWidget.saveWidgetData('pending_widget_logs', null);
+      return false;
+    }
   }
 
   /// Check for initial widget click URI when app launches.

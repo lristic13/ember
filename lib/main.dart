@@ -9,6 +9,8 @@ import 'core/theme/theme_provider.dart';
 import 'features/habits/data/datasources/habit_local_datasource.dart';
 import 'features/habits/data/models/habit_entry_model.dart';
 import 'features/habits/data/models/habit_model.dart';
+import 'features/habits/presentation/viewmodels/habits_viewmodel.dart';
+import 'features/habits/presentation/viewmodels/intensity_viewmodel.dart';
 import 'features/widgets/presentation/providers/home_widget_providers.dart';
 
 Future<void> main() async {
@@ -82,11 +84,51 @@ Future<void> _initializeHive() async {
   await Hive.openBox<HabitEntryModel>(HabitLocalDatasourceImpl.entriesBoxName);
 }
 
-class EmberApp extends ConsumerWidget {
+class EmberApp extends ConsumerStatefulWidget {
   const EmberApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EmberApp> createState() => _EmberAppState();
+}
+
+class _EmberAppState extends ConsumerState<EmberApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Sync any pending widget logs when app comes to foreground
+      _syncWidgetData();
+    }
+  }
+
+  Future<void> _syncWidgetData() async {
+    final homeWidgetService = ref.read(homeWidgetServiceProvider);
+    final hadPendingLogs = await homeWidgetService.syncPendingWidgetLogs();
+
+    if (hadPendingLogs) {
+      // Invalidate providers to refresh UI with synced data
+      ref.invalidate(habitsViewModelProvider);
+      ref.invalidate(habitIntensitiesProvider);
+      // Note: habitEntriesViewModelProvider is family-based, will refresh on next access
+    }
+
+    // Refresh widget data to ensure consistency
+    await homeWidgetService.updateAllWidgets();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref.watch(themeNotifierProvider);
 
     return MaterialApp.router(

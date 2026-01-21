@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Track your activity at a glance</string>
+    <string name="widget_name">Ember Activity</string>
+    <string name="select_activity">Select Activity</string>
+</resources>
