@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../widgets/presentation/providers/home_widget_providers.dart';
 import '../../domain/entities/habit.dart';
 import 'habits_providers.dart';
 import 'habits_state.dart';
@@ -38,6 +39,8 @@ class HabitsViewModel extends _$HabitsViewModel {
       (failure) => false,
       (createdHabit) {
         _loadHabits();
+        // Update all widgets (new activity available)
+        ref.read(homeWidgetServiceProvider).updateAllWidgets();
         return true;
       },
     );
@@ -52,6 +55,8 @@ class HabitsViewModel extends _$HabitsViewModel {
       (updatedHabit) {
         _loadHabits();
         ref.invalidate(habitByIdProvider(habit.id));
+        // Update widget for this activity
+        ref.read(homeWidgetServiceProvider).updateActivityWidget(habit.id);
         return true;
       },
     );
@@ -65,6 +70,8 @@ class HabitsViewModel extends _$HabitsViewModel {
       (failure) => false,
       (_) {
         _loadHabits();
+        // Update all widgets (activity removed)
+        ref.read(homeWidgetServiceProvider).updateAllWidgets();
         return true;
       },
     );

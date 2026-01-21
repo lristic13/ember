@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/utils/date_utils.dart';
+import '../../../widgets/presentation/providers/home_widget_providers.dart';
 import 'habit_entries_state.dart';
 import 'habit_statistics_viewmodel.dart';
 import 'habits_providers.dart';
@@ -104,6 +105,10 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
         ref.invalidate(habitIntensitiesProvider);
         ref.invalidate(allHabitEntriesProvider(habitId));
         ref.invalidate(habitStatisticsViewModelProvider(habitId));
+
+        // Update home widget
+        ref.read(homeWidgetServiceProvider).updateActivityWidget(habitId);
+
         return true;
       },
     );

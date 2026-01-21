@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#0D0D0F">
+
+    <!-- Top section with name, status, and button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Left: Name and status -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Water"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8 glasses"
+                android:textColor="#999999"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Right: Quick log button -->
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_button_background"
+            android:src="@drawable/ic_add"
+            android:scaleType="center"
+            android:contentDescription="Quick log" />
+
+    </LinearLayout>
+
+    <!-- Day labels -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="M" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="T" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="W" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="T" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="F" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="S" android:textColor="#808080" android:textSize="10sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="S" android:textColor="#808080" android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <!-- Heatmap cells with sample data -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal">
+
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginEnd="2dp" android:background="#CCFF6B1A" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginHorizontal="1dp" android:background="#CCFF6B1A" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginHorizontal="1dp" android:background="#CCFF6B1A" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginHorizontal="1dp" android:background="#1A1A1F" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginHorizontal="1dp" android:background="#CCFF6B1A" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginHorizontal="1dp" android:background="#CCFF6B1A" />
+        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="2dp" android:background="#1A1A1F" />
+
+    </LinearLayout>
+
+</LinearLayout>

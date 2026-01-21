@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/ember_widget"
+    android:minWidth="250dp"
+    android:minHeight="60dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="60dp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="900000"
+    android:widgetCategory="home_screen"
+    android:configure="com.lristic.ember.EmberWidgetConfigActivity"
+    android:description="@string/widget_description"
+    android:previewImage="@drawable/widget_preview" />
