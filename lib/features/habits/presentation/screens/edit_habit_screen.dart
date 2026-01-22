@@ -50,49 +50,52 @@ class EditHabitScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: topPadding + AppDimensions.paddingMd,
-            left: AppDimensions.paddingMd,
-            right: AppDimensions.paddingMd,
-            bottom: AppDimensions.paddingMd,
-          ),
-          child: habitAsync.when(
-            data: (habit) {
-              if (habit == null) {
-                return const Center(child: Text('Habit not found'));
-              }
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              top: topPadding + AppDimensions.paddingMd,
+              left: AppDimensions.paddingMd,
+              right: AppDimensions.paddingMd,
+              bottom: AppDimensions.paddingMd,
+            ),
+            child: habitAsync.when(
+              data: (habit) {
+                if (habit == null) {
+                  return const Center(child: Text('Habit not found'));
+                }
 
-              return HabitForm(
-                initialName: habit.name,
-                initialTrackingType: habit.trackingType,
-                initialUnit: habit.unit,
-                initialEmoji: habit.emoji,
-                initialGradientId: habit.gradientId,
-                submitButtonText: AppStrings.save,
-                onSubmit: (name, trackingType, unit, emoji, gradientId) async {
-                  final updatedHabit = habit.copyWith(
-                    name: name,
-                    trackingType: trackingType,
-                    unit: unit,
-                    emoji: emoji,
-                    gradientId: gradientId,
-                  );
+                return HabitForm(
+                  initialName: habit.name,
+                  initialTrackingType: habit.trackingType,
+                  initialUnit: habit.unit,
+                  initialEmoji: habit.emoji,
+                  initialGradientId: habit.gradientId,
+                  submitButtonText: AppStrings.save,
+                  onSubmit: (name, trackingType, unit, emoji, gradientId) async {
+                    final updatedHabit = habit.copyWith(
+                      name: name,
+                      trackingType: trackingType,
+                      unit: unit,
+                      emoji: emoji,
+                      gradientId: gradientId,
+                    );
 
-                  final success = await ref
-                      .read(habitsViewModelProvider.notifier)
-                      .updateHabit(updatedHabit);
+                    final success = await ref
+                        .read(habitsViewModelProvider.notifier)
+                        .updateHabit(updatedHabit);
 
-                  if (success && context.mounted) {
-                    context.pop();
-                  }
-                },
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text('Error: $error')),
+                    if (success && context.mounted) {
+                      context.pop();
+                    }
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error: $error')),
+            ),
           ),
         ),
       ),

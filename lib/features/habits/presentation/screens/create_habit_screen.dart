@@ -40,35 +40,38 @@ class CreateHabitScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: topPadding + AppDimensions.paddingMd,
-            left: AppDimensions.paddingMd,
-            right: AppDimensions.paddingMd,
-            bottom: AppDimensions.paddingMd,
-          ),
-          child: HabitForm(
-            onSubmit: (name, trackingType, unit, emoji, gradientId) async {
-              final habit = Habit(
-                id: const Uuid().v4(),
-                name: name,
-                trackingType: trackingType,
-                unit: unit,
-                emoji: emoji,
-                gradientId: gradientId,
-                createdAt: DateTime.now(),
-              );
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              top: topPadding + AppDimensions.paddingMd,
+              left: AppDimensions.paddingMd,
+              right: AppDimensions.paddingMd,
+              bottom: AppDimensions.paddingMd,
+            ),
+            child: HabitForm(
+              onSubmit: (name, trackingType, unit, emoji, gradientId) async {
+                final habit = Habit(
+                  id: const Uuid().v4(),
+                  name: name,
+                  trackingType: trackingType,
+                  unit: unit,
+                  emoji: emoji,
+                  gradientId: gradientId,
+                  createdAt: DateTime.now(),
+                );
 
-              final success = await ref
-                  .read(habitsViewModelProvider.notifier)
-                  .createHabit(habit);
+                final success = await ref
+                    .read(habitsViewModelProvider.notifier)
+                    .createHabit(habit);
 
-              if (success && context.mounted) {
-                context.pop();
-              }
-            },
+                if (success && context.mounted) {
+                  context.pop();
+                }
+              },
+            ),
           ),
         ),
       ),

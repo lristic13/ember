@@ -126,7 +126,7 @@ class _HabitFormState extends State<HabitForm> {
               setState(() => _selectedGradientId = gradientId);
             },
           ),
-          const Spacer(),
+          const SizedBox(height: AppDimensions.marginXl),
           ElevatedButton(
             onPressed: _isSubmitting ? null : _handleSubmit,
             child: _isSubmitting
