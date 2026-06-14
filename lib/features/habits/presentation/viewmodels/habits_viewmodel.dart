@@ -3,8 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../widgets/presentation/providers/home_widget_providers.dart';
 import '../../domain/entities/habit.dart';
+import 'habit_order_provider.dart';
 import 'habits_providers.dart';
 import 'habits_state.dart';
+import 'sort_mode_provider.dart';
 
 part 'habits_viewmodel.g.dart';
 
@@ -83,4 +85,32 @@ Future<Habit?> habitById(Ref ref, String id) async {
   final getHabitById = ref.watch(getHabitByIdUseCaseProvider);
   final result = await getHabitById(id);
   return result.valueOrNull;
+}
+
+/// Provider that returns habits sorted according to the current sort mode.
+@riverpod
+List<Habit> sortedHabits(Ref ref) {
+  final state = ref.watch(habitsViewModelProvider);
+  final sortMode = ref.watch(habitsSortModeProvider);
+
+  if (state is! HabitsLoaded) return [];
+
+  final habits = List<Habit>.from(state.habits);
+
+  switch (sortMode) {
+    case HabitsSortMode.name:
+      habits.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    case HabitsSortMode.recentlyCreated:
+      habits.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    case HabitsSortMode.custom:
+      final order = ref.watch(habitsOrderProvider);
+      final orderMap = {for (var i = 0; i < order.length; i++) order[i]: i};
+      habits.sort((a, b) {
+        final ai = orderMap[a.id] ?? habits.length;
+        final bi = orderMap[b.id] ?? habits.length;
+        return ai.compareTo(bi);
+      });
+  }
+
+  return habits;
 }

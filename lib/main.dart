@@ -9,6 +9,7 @@ import 'core/theme/theme_provider.dart';
 import 'features/habits/data/datasources/habit_local_datasource.dart';
 import 'features/habits/data/models/habit_entry_model.dart';
 import 'features/habits/data/models/habit_model.dart';
+import 'features/habits/presentation/viewmodels/habit_order_provider.dart';
 import 'features/habits/presentation/viewmodels/habits_viewmodel.dart';
 import 'features/habits/presentation/viewmodels/intensity_viewmodel.dart';
 import 'features/widgets/presentation/providers/home_widget_providers.dart';
@@ -25,10 +26,7 @@ Future<void> main() async {
   await _initializeHomeWidget(container);
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const EmberApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const EmberApp()),
   );
 }
 
@@ -82,6 +80,7 @@ Future<void> _initializeHive() async {
 
   await Hive.openBox<HabitModel>(HabitLocalDatasourceImpl.habitsBoxName);
   await Hive.openBox<HabitEntryModel>(HabitLocalDatasourceImpl.entriesBoxName);
+  await Hive.openBox<dynamic>(HabitsOrderNotifier.boxName);
 }
 
 class EmberApp extends ConsumerStatefulWidget {
@@ -91,7 +90,8 @@ class EmberApp extends ConsumerStatefulWidget {
   ConsumerState<EmberApp> createState() => _EmberAppState();
 }
 
-class _EmberAppState extends ConsumerState<EmberApp> with WidgetsBindingObserver {
+class _EmberAppState extends ConsumerState<EmberApp>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -129,7 +129,7 @@ class _EmberAppState extends ConsumerState<EmberApp> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeNotifierProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp.router(
       title: 'ember.',

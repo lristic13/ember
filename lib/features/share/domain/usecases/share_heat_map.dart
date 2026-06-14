@@ -1,49 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-
-import '../../../habits/domain/entities/habit.dart';
 import '../../../habits/domain/entities/habit_entry.dart';
 import '../../../habits/domain/repositories/habit_repository.dart';
-import '../../presentation/utils/heat_map_image_generator.dart';
 
-/// Use case for sharing heat map images.
+/// Provides the habit entry data used to build shareable heat map images.
+///
+/// Pure domain logic — image rendering (which needs a `BuildContext`) and the
+/// share sheet live in the presentation layer (see `HeatMapImageGenerator` and
+/// `SharePreviewSheet`), so this class never depends on Flutter.
 class ShareHeatMap {
   final HabitRepository _repository;
 
   ShareHeatMap(this._repository);
-
-  /// Generates and shares a heat map image for the given habit and year.
-  Future<void> call({
-    required BuildContext context,
-    required Habit habit,
-    required int year,
-  }) async {
-    // Get entries for the year
-    final entriesResult = await _repository.getEntriesInRange(
-      habitId: habit.id,
-      startDate: DateTime(year, 1, 1),
-      endDate: DateTime(year, 12, 31),
-    );
-
-    final entries = entriesResult.fold(
-      (failure) => <HabitEntry>[],
-      (entries) => entries,
-    );
-
-    // Generate image
-    final filePath = await HeatMapImageGenerator.generate(
-      context: context,
-      habit: habit,
-      entries: entries,
-      year: year,
-    );
-
-    // Share
-    await Share.shareXFiles(
-      [XFile(filePath)],
-      text: 'My ${habit.name} journey in $year \u{1F525}\n\nTracked with Ember',
-    );
-  }
 
   /// Gets entries for a specific year (for preview generation).
   Future<List<HabitEntry>> getEntriesForYear({
@@ -97,21 +63,6 @@ class ShareHeatMap {
           ..sort((a, b) => b.compareTo(a)); // Sort descending (newest first)
         return years;
       },
-    );
-  }
-
-  /// Generates a preview image and returns the file path.
-  Future<String> generatePreview({
-    required BuildContext context,
-    required Habit habit,
-    required List<HabitEntry> entries,
-    required int year,
-  }) async {
-    return HeatMapImageGenerator.generate(
-      context: context,
-      habit: habit,
-      entries: entries,
-      year: year,
     );
   }
 }

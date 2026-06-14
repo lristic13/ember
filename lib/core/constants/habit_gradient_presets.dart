@@ -244,28 +244,133 @@ abstract class HabitGradientPresets {
     glow: Color(0xFFD4945A),
   );
 
-  /// All available gradients.
+  // ===== NEW COLORS =====
+
+  // Scarlet (Intense Red)
+  static const HabitGradient scarlet = HabitGradient(
+    id: 'scarlet',
+    name: 'Scarlet',
+    none: Color(0xFF252529),
+    low: Color(0xFF3D0E18),
+    medium: Color(0xFF6B1428),
+    high: Color(0xFFB81E3A),
+    max: Color(0xFFFF1744),
+    glow: Color(0xFFFF5272),
+  );
+
+  // Blaze (Deep Orange)
+  static const HabitGradient blaze = HabitGradient(
+    id: 'blaze',
+    name: 'Blaze',
+    none: Color(0xFF252529),
+    low: Color(0xFF3D1E00),
+    medium: Color(0xFF6B3500),
+    high: Color(0xFFB85500),
+    max: Color(0xFFFF6D00),
+    glow: Color(0xFFFF9140),
+  );
+
+  // Electric (Neon Yellow)
+  static const HabitGradient electric = HabitGradient(
+    id: 'electric',
+    name: 'Electric',
+    none: Color(0xFF252529),
+    low: Color(0xFF3D3800),
+    medium: Color(0xFF6B6200),
+    high: Color(0xFFB8A800),
+    max: Color(0xFFFFEA00),
+    glow: Color(0xFFFFF176),
+  );
+
+  // Neon (Vibrant Green)
+  static const HabitGradient neon = HabitGradient(
+    id: 'neon',
+    name: 'Neon',
+    none: Color(0xFF252529),
+    low: Color(0xFF003D1E),
+    medium: Color(0xFF006B35),
+    high: Color(0xFF00B85A),
+    max: Color(0xFF00E676),
+    glow: Color(0xFF69F0AE),
+  );
+
+  // Cyan (Bright Aqua)
+  static const HabitGradient cyan = HabitGradient(
+    id: 'cyan',
+    name: 'Cyan',
+    none: Color(0xFF252529),
+    low: Color(0xFF003D3F),
+    medium: Color(0xFF006B6F),
+    high: Color(0xFF00B0B8),
+    max: Color(0xFF00E5FF),
+    glow: Color(0xFF4DEDFF),
+  );
+
+  // Cobalt (Rich Blue)
+  static const HabitGradient cobalt = HabitGradient(
+    id: 'cobalt',
+    name: 'Cobalt',
+    none: Color(0xFF252529),
+    low: Color(0xFF0E2040),
+    medium: Color(0xFF153866),
+    high: Color(0xFF1E5CB8),
+    max: Color(0xFF2979FF),
+    glow: Color(0xFF6BA3FF),
+  );
+
+  // Plasma (Vivid Purple)
+  static const HabitGradient plasma = HabitGradient(
+    id: 'plasma',
+    name: 'Plasma',
+    none: Color(0xFF252529),
+    low: Color(0xFF35003D),
+    medium: Color(0xFF5C006B),
+    high: Color(0xFF9C00B8),
+    max: Color(0xFFD500F9),
+    glow: Color(0xFFE040FB),
+  );
+
+  // Flamingo (Warm Pink)
+  static const HabitGradient flamingo = HabitGradient(
+    id: 'flamingo',
+    name: 'Flamingo',
+    none: Color(0xFF252529),
+    low: Color(0xFF3D202C),
+    medium: Color(0xFF6B384E),
+    high: Color(0xFFB8607E),
+    max: Color(0xFFFF80AB),
+    glow: Color(0xFFFFA8C7),
+  );
+
+  /// All available gradients (spectrum order).
   static const List<HabitGradient> all = [
+    // Reds
+    scarlet,
     ruby,
-    coral,
+    // Pinks
+    magenta,
+    flamingo,
+    // Oranges
+    blaze,
     ember,
+    copper,
     peach,
-    amber,
+    // Yellows
+    electric,
     sunflower,
-    lime,
+    // Greens
+    neon,
     mint,
     sage,
-    teal,
+    // Cyans / Blues
+    cyan,
     sky,
+    cobalt,
     ocean,
+    // Purples
     violet,
+    plasma,
     lavender,
-    magenta,
-    rose,
-    copper,
-    sand,
-    slate,
-    silver,
   ];
 
   /// Default gradient for new habits.

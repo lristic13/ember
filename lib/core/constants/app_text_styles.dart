@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppTextStyles {
-  static final String _fontFamily = GoogleFonts.lato().fontFamily!;
+  static final String _fontFamily = GoogleFonts.spaceGrotesk().fontFamily!;
 
   // Display
   static TextStyle displayLarge = TextStyle(

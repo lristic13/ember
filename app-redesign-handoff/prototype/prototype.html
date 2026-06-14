@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ember — redesign prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      html,body{margin:0;padding:0;background:#0b0f0c;font-family:'Space Grotesk',sans-serif}
+      *{box-sizing:border-box}
+      #bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;gap:8px;align-items:center;padding:12px 16px;background:rgba(11,15,12,0.9);backdrop-filter:blur(8px);border-bottom:1px solid rgba(120,180,140,0.12)}
+      #bar button{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:10px;border:1px solid rgba(120,180,140,0.18);background:#16201A;color:#8AA396;cursor:pointer}
+      #bar button.on{background:rgba(87,240,140,0.14);color:#86FFB1;border-color:rgba(87,240,140,0.3)}
+      #bar button.on.orange{background:rgba(255,107,26,0.16);color:#FF8A45;border-color:rgba(255,107,26,0.35)}
+      #bar .sp{flex:1}
+      #root{display:flex;gap:40px;align-items:flex-start;padding:84px 40px 40px}
+    </style>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="bar">
+      <strong style="color:#EAF4EE;font-size:15px;letter-spacing:-0.02em">ember · redesign</strong>
+      <span class="sp"></span>
+      <button id="b-green" class="on">Green accent</button>
+      <button id="b-orange">Orange · #FF6B1A</button>
+    </div>
+    <div id="root"></div>
+    <script type="text/babel" src="ios-frame.jsx"></script>
+    <script type="text/babel" src="ember-app.jsx"></script>
+    <script type="text/babel">
+      let accent = "green";
+      function render() {
+        const ac = accent === "orange" ? window.ORANGE : window.GREEN;
+        document.getElementById("b-green").className = accent === "green" ? "on" : "";
+        document.getElementById("b-orange").className = accent === "orange" ? "on orange" : "";
+        ReactDOM.createRoot(document.getElementById("root")).render(
+          <React.Fragment>
+            <div style={{ width: 402 }}><window.EmberHome ac={ac} /></div>
+            <div style={{ width: 402 }}><window.EmberDetails ac={ac} /></div>
+            <div style={{ width: 402 }}><window.EmberInsights ac={ac} /></div>
+          </React.Fragment>
+        );
+      }
+      document.getElementById("b-green").onclick = () => { accent = "green"; render(); };
+      document.getElementById("b-orange").onclick = () => { accent = "orange"; render(); };
+      render();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+import 'package:hive_ce/hive.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'habit_order_provider.g.dart';
+
+@riverpod
+class HabitsOrderNotifier extends _$HabitsOrderNotifier {
+  static const boxName = 'habit_order';
+  static const _key = 'order';
+
+  @override
+  List<String> build() {
+    final stored = Hive.box<dynamic>(boxName).get(_key);
+    if (stored is List) return List<String>.from(stored);
+    return [];
+  }
+
+  void reorder(List<String> displayedIds, int oldIndex, int newIndex) {
+    final list = List<String>.from(displayedIds);
+    if (newIndex > oldIndex) newIndex--;
+    list.insert(newIndex, list.removeAt(oldIndex));
+    state = list;
+    Hive.box<dynamic>(boxName).put(_key, list);
+  }
+}

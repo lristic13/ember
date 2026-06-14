@@ -1,13 +1,17 @@
 import 'dart:ui';
 
 abstract class AppColors {
-  // Background
-  static const Color background = Color(0xFF0D0D0F);
-  static const Color surface = Color(0xFF1A1A1E);
-  static const Color surfaceLight = Color(0xFF252529);
+  // Background / surfaces (redesign dark palette)
+  static const Color background = Color(0xFF070D09);
+  static const Color surface = Color(0xFF101712); // card
+  static const Color surfaceLight = Color(0xFF16201A); // raised chip / empty cell
+
+  // Hairline borders (greenish, very low alpha)
+  static const Color border = Color(0x1A78B48C); // rgba(120,180,140,0.10)
+  static const Color borderSoft = Color(0x0D78B48C); // rgba(120,180,140,0.05)
 
   // Ember gradient (heat map intensity)
-  static const Color emberNone = Color(0xFF252529);
+  static const Color emberNone = Color(0xFF16201A);
   static const Color emberLow = Color(0xFF3D2417);
   static const Color emberMedium = Color(0xFF6B3410);
   static const Color emberHigh = Color(0xFFB84D00);
@@ -15,11 +19,11 @@ abstract class AppColors {
   static const Color emberGlow = Color(0xFFFF8C42);
 
   // Text
-  static const Color textPrimary = Color(0xFFF5F5F5);
-  static const Color textSecondary = Color(0xFFA0A0A0);
-  static const Color textMuted = Color(0xFF606060);
+  static const Color textPrimary = Color(0xFFEAF4EE);
+  static const Color textSecondary = Color(0xFF8AA396);
+  static const Color textMuted = Color(0xFF55695D);
 
-  // Accent
+  // Accent (brand)
   static const Color accent = Color(0xFFFF6B1A);
 
   // Semantic

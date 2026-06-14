@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:upgrader/upgrader.dart';
 
 import '../../features/habits/presentation/screens/create_habit_screen.dart';
 import '../../features/habits/presentation/screens/edit_habit_screen.dart';
@@ -22,12 +25,23 @@ abstract class AppRoutes {
   static String yearHeatmapPath(String id) => '/habits/$id/year';
 }
 
+final _upgrader = Upgrader();
+
 final appRouter = GoRouter(
   initialLocation: AppRoutes.home,
   routes: [
     GoRoute(
       path: AppRoutes.home,
-      builder: (context, state) => const HabitsScreen(),
+      builder: (context, state) => UpgradeAlert(
+        upgrader: _upgrader,
+        dialogStyle: Platform.isIOS
+            ? UpgradeDialogStyle.cupertino
+            : UpgradeDialogStyle.material,
+        showReleaseNotes: true,
+        showLater: false,
+        showIgnore: false,
+        child: const HabitsScreen(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.habits,
@@ -68,9 +82,6 @@ final appRouter = GoRouter(
       ),
     ),
   ],
-  errorBuilder: (context, state) => Scaffold(
-    body: Center(
-      child: Text('Page not found: ${state.uri.path}'),
-    ),
-  ),
+  errorBuilder: (context, state) =>
+      Scaffold(body: Center(child: Text('Page not found: ${state.uri.path}'))),
 );

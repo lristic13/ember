@@ -3,15 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_dimensions.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/ember_tokens.dart';
+import '../../domain/entities/activity_insight.dart';
+import '../../domain/entities/insights_period.dart';
 import '../viewmodels/insights_state.dart';
 import '../viewmodels/insights_viewmodel.dart';
-import '../widgets/activity_consistency_item.dart';
+import '../widgets/insights_completion_hero.dart';
 import '../widgets/insights_empty_state.dart';
-import '../widgets/insights_bar_chart.dart';
-import '../widgets/insights_tip_card.dart';
-import '../widgets/period_selector.dart';
+import '../widgets/insights_ranked_row.dart';
+import '../widgets/insights_range_pill.dart';
 
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
@@ -19,7 +19,7 @@ class InsightsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(insightsViewModelProvider);
-    final theme = Theme.of(context);
+    final palette = EmberPalette.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -29,11 +29,22 @@ class InsightsScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: AppBar(
-              backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
-              title: const Text(
-                AppStrings.insights,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              backgroundColor: palette.bg.withValues(alpha: 0.7),
+              title: Text(
+                'Insights',
+                style: EmberText.display(19, color: palette.text),
               ),
+              actions: [
+                if (state is InsightsLoaded)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: InsightsRangePill(
+                      selectedPeriod: state.period,
+                      onPeriodChanged: (p) =>
+                          ref.read(insightsViewModelProvider.notifier).setPeriod(p),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -44,8 +55,8 @@ class InsightsScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(message, style: TextStyle(color: theme.colorScheme.error)),
-              const SizedBox(height: AppDimensions.paddingMd),
+              Text(message, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () =>
                     ref.read(insightsViewModelProvider.notifier).refresh(),
@@ -54,84 +65,57 @@ class InsightsScreen extends ConsumerWidget {
             ],
           ),
         ),
-        InsightsLoaded(
-          :final period,
-          :final insights,
-          :final selectedInsight,
-        ) =>
-          insights.isEmpty
-              ? const InsightsEmptyState()
-              : SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    top:
-                        MediaQuery.of(context).padding.top +
-                        kToolbarHeight +
-                        AppDimensions.paddingMd,
-                    left: AppDimensions.paddingMd,
-                    right: AppDimensions.paddingMd,
-                    bottom: AppDimensions.paddingMd,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Period selector
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          PeriodSelector(
-                            selectedPeriod: period,
-                            onPeriodChanged: (newPeriod) {
-                              ref
-                                  .read(insightsViewModelProvider.notifier)
-                                  .setPeriod(newPeriod);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppDimensions.paddingLg),
-
-                      // Bar chart
-                      InsightsBarChart(
-                        insights: insights,
-                        selectedInsight: selectedInsight,
-                        onBarTap: (insight) {
-                          ref
-                              .read(insightsViewModelProvider.notifier)
-                              .selectInsight(insight);
-                        },
-                      ), // Tip card
-                      InsightsTipCard(insights: insights),
-                      const SizedBox(height: AppDimensions.paddingMd),
-
-                      // Divider
-                      Divider(color: theme.dividerColor),
-                      const SizedBox(height: AppDimensions.paddingMd),
-
-                      // Activity list
-                      ...insights.map((insight) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: AppDimensions.paddingSm,
-                          ),
-                          child: ActivityConsistencyItem(
-                            insight: insight,
-                            isHighlighted:
-                                selectedInsight?.activity.id ==
-                                insight.activity.id,
-                            onTap: () {
-                              ref
-                                  .read(insightsViewModelProvider.notifier)
-                                  .selectInsight(insight);
-                            },
-                          ),
-                        );
-                      }),
-
-                      const SizedBox(height: AppDimensions.paddingMd),
-                    ],
-                  ),
-                ),
+        InsightsLoaded(:final period, :final insights) => insights.isEmpty
+            ? const InsightsEmptyState()
+            : _InsightsBody(period: period, insights: insights, palette: palette),
       },
+    );
+  }
+}
+
+class _InsightsBody extends StatelessWidget {
+  final InsightsPeriod period;
+  final List<ActivityInsight> insights;
+  final EmberPalette palette;
+
+  const _InsightsBody({
+    required this.period,
+    required this.insights,
+    required this.palette,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final done = insights.fold<int>(0, (s, i) => s + i.daysLogged);
+    final possible = insights.fold<int>(0, (s, i) => s + i.totalDays);
+    final pct = possible == 0 ? 0 : ((done / possible) * 100).round();
+    final rangeLabel = period.days == 7 ? 'THIS WEEK' : 'LAST ${period.days} DAYS';
+
+    final topInset = MediaQuery.of(context).padding.top + kToolbarHeight;
+
+    return ListView(
+      padding: EdgeInsets.fromLTRB(20, topInset + 12, 20, 40),
+      children: [
+        InsightsCompletionHero(
+          rangeLabel: rangeLabel,
+          done: done,
+          possible: possible,
+          percent: pct,
+        ),
+        const SizedBox(height: 28),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          child: Text(
+            period.days == 7 ? 'RANKED THIS WEEK' : 'RANKED',
+            style: EmberText.mono(12, color: palette.dim),
+          ),
+        ),
+        for (final insight in insights)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: InsightsRankedRow(insight: insight),
+          ),
+      ],
     );
   }
 }

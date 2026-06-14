@@ -9,7 +9,7 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/habit.dart';
 import '../viewmodels/habits_viewmodel.dart';
-import '../widgets/habit_form.dart';
+import '../widgets/habit_form/habit_form.dart';
 
 class CreateHabitScreen extends ConsumerWidget {
   const CreateHabitScreen({super.key});

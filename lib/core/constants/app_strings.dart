@@ -29,6 +29,9 @@ abstract class AppStrings {
 
   // Form Labels
   static const String colorLabel = 'Color';
+  static const String iconLabel = 'Icon';
+  static const String tapToPickIcon = 'Tap to pick an emoji';
+  static const String removeIcon = 'Remove';
 
   // Actions
   static const String save = 'Save';
@@ -89,4 +92,10 @@ abstract class AppStrings {
   static const String noInsightsYet = 'No insights yet';
   static const String noInsightsSubtitle =
       'Start logging activities to see\nyour consistency breakdown';
+
+  // Sorting
+  static const String sortBy = 'Sort by';
+  static const String sortByName = 'Name';
+  static const String sortByRecent = 'Recently Created';
+  static const String sortByCustom = 'Custom Order';
 }

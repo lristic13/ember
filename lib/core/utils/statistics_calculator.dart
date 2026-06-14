@@ -82,6 +82,31 @@ abstract class StatisticsCalculator {
     return entries.fold(0.0, (sum, entry) => sum + entry.value);
   }
 
+  /// Sum of daily values within a single calendar month.
+  static double calculateMonthTotal(
+    Map<DateTime, double> entriesByDate,
+    int year,
+    int month,
+  ) {
+    var sum = 0.0;
+    entriesByDate.forEach((date, value) {
+      if (date.year == year && date.month == month) sum += value;
+    });
+    return sum;
+  }
+
+  /// Sum of daily values within a single calendar year.
+  static double calculateYearTotal(
+    Map<DateTime, double> entriesByDate,
+    int year,
+  ) {
+    var sum = 0.0;
+    entriesByDate.forEach((date, value) {
+      if (date.year == year) sum += value;
+    });
+    return sum;
+  }
+
   static double calculateDailyAverage(List<HabitEntry> entries) {
     if (entries.isEmpty) return 0;
 

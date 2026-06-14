@@ -8,9 +8,9 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/app_router.dart';
 import '../viewmodels/habits_viewmodel.dart';
-import '../widgets/habit_form.dart';
-import '../widgets/delete_confirmation_bottom_sheet.dart';
-import '../widgets/habit_options_bottom_sheet.dart';
+import '../widgets/habit_form/habit_form.dart';
+import '../widgets/entry/delete_confirmation_bottom_sheet.dart';
+import '../widgets/habits_list/habit_options_bottom_sheet.dart';
 
 class EditHabitScreen extends ConsumerWidget {
   final String habitId;

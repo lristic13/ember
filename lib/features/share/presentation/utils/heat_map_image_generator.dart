@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../../core/constants/editorial_card_style.dart';
 import '../../../habits/domain/entities/habit.dart';
 import '../../../habits/domain/entities/habit_entry.dart';
-import '../widgets/share_card.dart';
+import '../widgets/editorial_share_card.dart';
 
 /// Generates shareable PNG images from heat map data.
 ///
@@ -24,12 +25,19 @@ class HeatMapImageGenerator {
     required Habit habit,
     required List<HabitEntry> entries,
     required int year,
-    int? month,
+    required int month,
   }) async {
+    // Resolve the overlay synchronously, before any async gap, so we never
+    // touch a (possibly defunct) BuildContext after awaiting.
+    final overlay = Overlay.of(context);
+
+    // Pre-warm the card's fonts so the capture never renders a fallback frame.
+    await EditorialCardText.ensureLoaded();
+
     // Create the share card widget wrapped in RepaintBoundary
     final shareCard = RepaintBoundary(
       key: _boundaryKey,
-      child: ShareCard(
+      child: EditorialShareCard(
         habit: habit,
         entries: entries,
         year: year,
@@ -45,8 +53,8 @@ class HeatMapImageGenerator {
         child: Material(
           color: Colors.transparent,
           child: SizedBox(
-            width: ShareCard.width,
-            height: ShareCard.height,
+            width: EditorialShareCard.width,
+            height: EditorialShareCard.height,
             child: shareCard,
           ),
         ),
@@ -54,7 +62,7 @@ class HeatMapImageGenerator {
     );
 
     // Insert the overlay
-    Overlay.of(context).insert(_overlayEntry!);
+    overlay.insert(_overlayEntry!);
 
     try {
       // Wait for the widget to be built and laid out
@@ -77,11 +85,10 @@ class HeatMapImageGenerator {
       }
 
       // Save to temp file
-      final monthSuffix = month != null ? '_$month' : '';
       final filePath = await _saveToTempFile(
         bytes: byteData.buffer.asUint8List(),
         fileName:
-            'ember_${habit.name.toLowerCase().replaceAll(' ', '_')}_$year$monthSuffix.png',
+            'ember_${habit.name.toLowerCase().replaceAll(' ', '_')}_${year}_$month.png',
       );
 
       return filePath;

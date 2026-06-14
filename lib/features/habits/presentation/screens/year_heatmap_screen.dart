@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../viewmodels/habit_entries_viewmodel.dart';
 import '../viewmodels/habits_viewmodel.dart';
-import '../widgets/year_heatmap_content.dart';
+import '../widgets/heatmap/year_heatmap_content.dart';
 
 class YearHeatmapScreen extends ConsumerWidget {
   final String habitId;

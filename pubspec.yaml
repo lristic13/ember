@@ -5,7 +5,7 @@ description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
-version: 1.0.2+2
+version: 3.0.1+1
 
 environment:
   sdk: ^3.8.1
@@ -16,40 +16,39 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  go_router: ^14.2.0
-  hive_ce: ^2.6.0
-  hive_ce_flutter: ^2.1.0
-  uuid: ^4.4.0
-  intl: ^0.19.0
-  lottie: ^3.3.1
-  dotlottie_loader: ^0.0.4
-  google_fonts: ^6.2.1
-  animations: ^2.0.11
-  fl_chart: ^0.69.0
-  share_plus: ^10.0.0
-  path_provider: ^2.1.0
-  home_widget: ^0.7.0
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
+  go_router: ^17.0.0
+  hive_ce: ^2.19.0
+  hive_ce_flutter: ^2.3.4
+  uuid: ^4.5.2
+  intl: ^0.20.2
+  lottie: ^3.3.2
+  dotlottie_loader: ^0.0.5
+  google_fonts: ^7.0.0
+  animations: ^2.1.1
+  fl_chart: ^1.1.1
+  share_plus: ^12.0.1
+  path_provider: ^2.1.5
+  home_widget: ^0.9.0
+  upgrader: ^12.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
-  riverpod_generator: ^2.4.0
-  build_runner: ^2.4.9
-  hive_ce_generator: ^1.6.0
-  riverpod_lint: ^2.3.10
-  custom_lint: ^0.6.4
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^3.0.0
+  build_runner: ^2.4.14
+  hive_ce_generator: ^1.9.0
   flutter_launcher_icons: ^0.14.3
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon/logo_crni_gradient.png"
-  adaptive_icon_background: "#0D0D0F"
-  adaptive_icon_foreground: "assets/icon/logo_crni_gradient.png"
+  image_path: "assets/icon/ember_master_1024.png"
+  adaptive_icon_background: "assets/icon/ember_adaptive_background.png"
+  adaptive_icon_foreground: "assets/icon/ember_adaptive_foreground.png"
   remove_alpha_ios: true
 
 

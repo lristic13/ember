@@ -8,6 +8,16 @@
 import WidgetKit
 import SwiftUI
 
+// MARK: - Fonts
+
+extension Font {
+    /// Space Grotesk — matches the in-app display font. Falls back to the
+    /// system font automatically if the bundled font fails to load.
+    static func sg(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        .custom("Space Grotesk", size: size).weight(weight)
+    }
+}
+
 // MARK: - Timeline Entry
 
 struct EmberEntry: TimelineEntry {
@@ -172,7 +182,7 @@ struct EmberWidgetEntryView: View {
                 .font(.system(size: 32))
                 .foregroundColor(.gray)
             Text("Tap to select activity")
-                .font(.caption)
+                .font(.sg(12))
                 .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -184,13 +194,12 @@ struct EmberWidgetEntryView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.name)
-                        .font(.headline)
-                        .fontWeight(.semibold)
+                        .font(.sg(16, .semibold))
                         .foregroundColor(.white)
                         .lineLimit(1)
 
                     Text(statusText)
-                        .font(.subheadline)
+                        .font(.sg(13))
                         .foregroundColor(Color(white: 0.6))
                         .lineLimit(1)
                 }
@@ -203,8 +212,7 @@ struct EmberWidgetEntryView: View {
                             .fill(gradientColor)
                             .frame(width: 32, height: 32)
                         Text(entry.isCompletion ? "✓" : "+")
-                            .font(.body)
-                            .fontWeight(.bold)
+                            .font(.sg(17, .bold))
                             .foregroundColor(.white)
                     }
                 }
@@ -217,7 +225,7 @@ struct EmberWidgetEntryView: View {
             HStack(spacing: 3) {
                 ForEach(["M", "T", "W", "T", "F", "S", "S"], id: \.self) { day in
                     Text(day)
-                        .font(.system(size: 10))
+                        .font(.sg(10, .medium))
                         .foregroundColor(Color(white: 0.5))
                         .frame(maxWidth: .infinity)
                 }
