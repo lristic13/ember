@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_dimensions.dart';
 import '../../../domain/entities/habit.dart';
 import '../../viewmodels/habit_order_provider.dart';
+import '../../viewmodels/search_query_provider.dart';
 import '../../viewmodels/sort_mode_provider.dart';
 import 'habit_card.dart';
 
@@ -15,12 +16,14 @@ class HabitsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sortMode = ref.watch(habitsSortModeProvider);
+    // Reordering a search-filtered subset would corrupt the saved order.
+    final searching = ref.watch(habitsSearchQueryProvider).trim().isNotEmpty;
     final bottomPadding =
         MediaQuery.of(context).padding.bottom +
         AppDimensions.buttonHeightLg +
         AppDimensions.paddingMd * 2;
 
-    if (sortMode == HabitsSortMode.custom) {
+    if (sortMode == HabitsSortMode.custom && !searching) {
       return ReorderableListView.builder(
         padding: EdgeInsets.only(
           top: 20,

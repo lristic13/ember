@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_dimensions.dart';
 import '../../../domain/entities/habit.dart';
 import '../../viewmodels/habit_order_provider.dart';
+import '../../viewmodels/search_query_provider.dart';
 import '../../viewmodels/sort_mode_provider.dart';
 import 'habit_grid_card.dart';
 
@@ -50,9 +51,11 @@ class _HabitsGridState extends ConsumerState<HabitsGrid> {
   @override
   Widget build(BuildContext context) {
     final sortMode = ref.watch(habitsSortModeProvider);
+    final searching = ref.watch(habitsSearchQueryProvider).trim().isNotEmpty;
 
-    // Reordering only makes sense in custom order — every other mode is derived.
-    if (sortMode != HabitsSortMode.custom) {
+    // Reordering only makes sense in custom order with no active filter —
+    // dragging a search-filtered subset would corrupt the saved order.
+    if (sortMode != HabitsSortMode.custom || searching) {
       return GridView.builder(
         padding: _padding(context),
         gridDelegate: _gridDelegate,
