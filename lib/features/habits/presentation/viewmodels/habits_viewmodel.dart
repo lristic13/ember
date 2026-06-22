@@ -6,6 +6,7 @@ import '../../domain/entities/habit.dart';
 import 'habit_order_provider.dart';
 import 'habits_providers.dart';
 import 'habits_state.dart';
+import 'search_query_provider.dart';
 import 'shared_habit_providers.dart';
 import 'sort_mode_provider.dart';
 
@@ -125,4 +126,20 @@ List<Habit> sortedHabits(Ref ref) {
   }
 
   return habits;
+}
+
+/// [sortedHabits] narrowed by the current search query (name or emoji match).
+/// Drives the list/grid; the Today summary still uses the full [sortedHabits].
+@riverpod
+List<Habit> visibleHabits(Ref ref) {
+  final habits = ref.watch(sortedHabitsProvider);
+  final query = ref.watch(habitsSearchQueryProvider).trim().toLowerCase();
+  if (query.isEmpty) return habits;
+  return habits
+      .where(
+        (h) =>
+            h.name.toLowerCase().contains(query) ||
+            (h.emoji?.contains(query) ?? false),
+      )
+      .toList();
 }
