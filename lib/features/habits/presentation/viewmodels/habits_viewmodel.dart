@@ -6,6 +6,7 @@ import '../../domain/entities/habit.dart';
 import 'habit_order_provider.dart';
 import 'habits_providers.dart';
 import 'habits_state.dart';
+import 'shared_habit_providers.dart';
 import 'sort_mode_provider.dart';
 
 part 'habits_viewmodel.g.dart';
@@ -82,6 +83,13 @@ class HabitsViewModel extends _$HabitsViewModel {
 
 @riverpod
 Future<Habit?> habitById(Ref ref, String id) async {
+  // Shared habit? Resolve from the live Firestore list before falling back to
+  // the local Hive repository.
+  final shared = ref.watch(sharedHabitsProvider).asData?.value ?? const <Habit>[];
+  for (final habit in shared) {
+    if (habit.id == id) return habit;
+  }
+
   final getHabitById = ref.watch(getHabitByIdUseCaseProvider);
   final result = await getHabitById(id);
   return result.valueOrNull;
@@ -92,10 +100,14 @@ Future<Habit?> habitById(Ref ref, String id) async {
 List<Habit> sortedHabits(Ref ref) {
   final state = ref.watch(habitsViewModelProvider);
   final sortMode = ref.watch(habitsSortModeProvider);
+  final shared =
+      ref.watch(sharedHabitsProvider).asData?.value ?? const <Habit>[];
 
-  if (state is! HabitsLoaded) return [];
-
-  final habits = List<Habit>.from(state.habits);
+  final local = state is HabitsLoaded ? state.habits : const <Habit>[];
+  // Personal (Hive) + shared (Firestore), interleaved. The two stores hold
+  // disjoint ids, so no dedup is needed.
+  final habits = [...local, ...shared];
+  if (habits.isEmpty) return habits;
 
   switch (sortMode) {
     case HabitsSortMode.name:

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -11,16 +12,24 @@ import 'features/habits/data/models/habit_entry_model.dart';
 import 'features/habits/data/models/habit_model.dart';
 import 'features/habits/presentation/viewmodels/habit_order_provider.dart';
 import 'features/habits/presentation/viewmodels/habits_viewmodel.dart';
+import 'features/auth/presentation/viewmodels/auth_providers.dart';
 import 'features/habits/presentation/viewmodels/intensity_viewmodel.dart';
 import 'features/widgets/presentation/providers/home_widget_providers.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await _initializeHive();
 
   // Create provider container for widget initialization
   final container = ProviderContainer();
+
+  // Let the router's redirect read auth state, and re-run it on auth changes.
+  gRouterContainer = container;
+  container.listen(authStateProvider, (_, _) => gAuthRefresh.value++);
 
   // Initialize home widget service
   await _initializeHomeWidget(container);

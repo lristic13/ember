@@ -67,3 +67,14 @@ secrets.dart
 EMBER_INSTRUCTIONS.md
 CLAUDE.md
 COLLABORATION_FEATURE.md
+COLLABORATION_PHASE_0_1.md
+
+# Cloud Functions
+functions/node_modules/
+functions/lib/
+functions/.env
+functions/serviceAccount*.json
+
+# Firebase
+.firebase/
+*-debug.log

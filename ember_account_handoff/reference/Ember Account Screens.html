@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ember — Account screens</title>
+    <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#070809"/><circle cx="50" cy="54" r="20" fill="#FF6B1A"/><circle cx="50" cy="54" r="20" fill="url(#g)"/><defs><radialGradient id="g" cx="0.4" cy="0.3"><stop offset="0" stop-color="#FF8A45"/><stop offset="1" stop-color="#E85600"/></radialGradient></defs><text x="50" y="86" font-family="sans-serif" font-size="15" font-weight="700" fill="#EEF1F4" text-anchor="middle">ember</text></svg></template>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      html,body{margin:0;padding:0;background:#0b0f0c}
+      *{box-sizing:border-box}
+      @keyframes ember-spin{to{transform:rotate(360deg)}}
+      .ember-spin{animation:ember-spin .8s linear infinite}
+      @keyframes ember-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+      .ember-caret{animation:ember-blink 1.05s steps(1) infinite}
+    </style>
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="store/store-atoms.jsx"></script>
+    <script type="text/babel" src="account/ember-account.jsx"></script>
+    <script type="text/babel">
+      const { DesignCanvas, DCSection, DCArtboard } = window;
+      const P = window;
+      const W = 1032, H = 2172;
+
+      function App() {
+        return (
+          <DesignCanvas>
+            <DCSection id="signin" title="Sign in" subtitle="Entry to account creation. Apple first per Apple's HIG, then Google. States: default · connecting · error.">
+              <DCArtboard id="signin-default" label="Default" width={W} height={H}><P.SignIn state="default" /></DCArtboard>
+              <DCArtboard id="signin-loading" label="Connecting (spinner)" width={W} height={H}><P.SignIn state="loading" /></DCArtboard>
+              <DCArtboard id="signin-error" label="Error" width={W} height={H}><P.SignIn state="error" /></DCArtboard>
+            </DCSection>
+
+            <DCSection id="handle" title="Handle setup" subtitle="Shown right after first sign-in. One immutable @handle with a live availability indicator. States: checking · available · taken · invalid.">
+              <DCArtboard id="handle-checking" label="Checking…" width={W} height={H}><P.HandleSetup state="checking" /></DCArtboard>
+              <DCArtboard id="handle-available" label="✓ Available" width={W} height={H}><P.HandleSetup state="available" /></DCArtboard>
+              <DCArtboard id="handle-taken" label="✗ Taken" width={W} height={H}><P.HandleSetup state="taken" /></DCArtboard>
+              <DCArtboard id="handle-invalid" label="✗ Invalid format" width={W} height={H}><P.HandleSetup state="invalid" /></DCArtboard>
+            </DCSection>
+
+            <DCSection id="profile" title="Profile" subtitle="Identity + Insights and the theme switch (moved here), plus Sign out and the destructive Delete-account flow.">
+              <DCArtboard id="profile-main" label="Profile" width={W} height={H}><P.Profile /></DCArtboard>
+              <DCArtboard id="profile-delete" label="Delete account — confirm" width={W} height={H}><P.ProfileDelete /></DCArtboard>
+            </DCSection>
+          </DesignCanvas>
+        );
+      }
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

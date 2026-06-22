@@ -5,13 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../auth/presentation/viewmodels/auth_providers.dart';
 import '../../../share/presentation/providers/share_providers.dart';
 import '../../../share/presentation/widgets/share_preview_dialog.dart';
 import '../../domain/entities/habit.dart';
 import '../viewmodels/habits_viewmodel.dart';
+import '../viewmodels/shared_habit_providers.dart';
 import '../widgets/entry/delete_confirmation_bottom_sheet.dart';
 import '../widgets/habit_details/habit_details_content.dart';
 import '../widgets/habit_form/habit_form.dart';
+import '../widgets/invites/invite_sheet.dart';
 
 class HabitDetailsScreen extends ConsumerWidget {
   final String habitId;
@@ -40,6 +43,21 @@ class HabitDetailsScreen extends ConsumerWidget {
                   data: (habit) {
                     if (habit == null) return const SizedBox.shrink();
                     return IconButton(
+                      icon: const Icon(Icons.person_add_alt_1),
+                      tooltip: 'Invite',
+                      onPressed: () => _showInviteSheet(context, habit),
+                    );
+                  },
+                  orElse: () => const SizedBox.shrink(),
+                ),
+                habitAsync.maybeWhen(
+                  data: (habit) {
+                    // Edit/Share are local-only; hide them for shared habits
+                    // (managing a shared habit comes in Phase 5).
+                    if (habit == null || habit.isShared) {
+                      return const SizedBox.shrink();
+                    }
+                    return IconButton(
                       icon: const Icon(Icons.share),
                       tooltip: 'Share',
                       onPressed: () => _showShareDialog(context, ref, habit),
@@ -50,6 +68,13 @@ class HabitDetailsScreen extends ConsumerWidget {
                 habitAsync.maybeWhen(
                   data: (habit) {
                     if (habit == null) return const SizedBox.shrink();
+                    // Personal habits are always editable; shared habits only
+                    // by their owner (the update is owner-gated server-side).
+                    final isOwner =
+                        habit.ownerId == ref.read(currentUserProvider)?.uid;
+                    if (habit.isShared && !isOwner) {
+                      return const SizedBox.shrink();
+                    }
                     return IconButton(
                       icon: const Icon(Icons.edit),
                       tooltip: AppStrings.edit,
@@ -74,6 +99,15 @@ class HabitDetailsScreen extends ConsumerWidget {
         error: (error, _) => Center(child: Text('Error: $error')),
       ),
     );
+  }
+
+  Future<void> _showInviteSheet(BuildContext context, Habit habit) async {
+    final handle = await showInviteSheet(context, habit);
+    if (handle != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invite sent to @$handle')),
+      );
+    }
   }
 
   Future<void> _showShareDialog(
@@ -142,18 +176,21 @@ class HabitDetailsScreen extends ConsumerWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete_outline,
-                              color: theme.colorScheme.error,
+                          // Shared habits are deleted from the Members panel
+                          // (owner-only, deletes for everyone), not here.
+                          if (!habit.isShared)
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: theme.colorScheme.error,
+                              ),
+                              onPressed: () => _handleDelete(
+                                context,
+                                sheetContext,
+                                ref,
+                                habit.id,
+                              ),
                             ),
-                            onPressed: () => _handleDelete(
-                              context,
-                              sheetContext,
-                              ref,
-                              habit.id,
-                            ),
-                          ),
                           IconButton(
                             icon: const Icon(Icons.close),
                             onPressed: () => Navigator.pop(sheetContext),
@@ -172,6 +209,29 @@ class HabitDetailsScreen extends ConsumerWidget {
                     submitButtonText: AppStrings.save,
                     onSubmit:
                         (name, trackingType, unit, emoji, gradientId) async {
+                          if (habit.isShared) {
+                            final result = await ref
+                                .read(sharedHabitRepositoryProvider)
+                                .updateSharedHabit(
+                                  habitId: habit.id,
+                                  name: name,
+                                  trackingType: trackingType,
+                                  unit: unit,
+                                  emoji: emoji,
+                                  gradientId: gradientId,
+                                );
+                            if (!sheetContext.mounted) return;
+                            result.fold(
+                              (failure) => ScaffoldMessenger.of(
+                                sheetContext,
+                              ).showSnackBar(
+                                SnackBar(content: Text(failure.message)),
+                              ),
+                              (_) => Navigator.pop(sheetContext),
+                            );
+                            return;
+                          }
+
                           final updatedHabit = habit.copyWith(
                             name: name,
                             trackingType: trackingType,

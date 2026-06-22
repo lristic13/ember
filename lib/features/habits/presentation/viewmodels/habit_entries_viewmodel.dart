@@ -2,17 +2,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/utils/date_utils.dart';
+import '../../../auth/presentation/viewmodels/auth_providers.dart';
 import '../../../widgets/presentation/providers/home_widget_providers.dart';
 import 'habit_entries_state.dart';
 import 'habit_statistics_viewmodel.dart';
 import 'habits_providers.dart';
 import 'intensity_viewmodel.dart';
+import 'shared_habit_providers.dart';
 
 part 'habit_entries_viewmodel.g.dart';
 
 /// Provider that loads all entries for a habit and returns them as a map by date.
+/// Routes to Firestore for shared habits, Hive for personal ones.
 @riverpod
 Future<Map<DateTime, double>> allHabitEntries(Ref ref, String habitId) async {
+  final isShared = ref.watch(
+    sharedHabitsProvider.select(
+      (async) => async.asData?.value.any((h) => h.id == habitId) ?? false,
+    ),
+  );
+  if (isShared) {
+    return ref.watch(sharedHabitEntriesProvider(habitId).future);
+  }
+
   final getHabitEntries = ref.read(getHabitEntriesUseCaseProvider);
   final result = await getHabitEntries(habitId);
 
@@ -35,10 +47,42 @@ Future<Map<DateTime, double>> allHabitEntries(Ref ref, String habitId) async {
 
 @riverpod
 class HabitEntriesViewModel extends _$HabitEntriesViewModel {
+  bool _isShared = false;
+
   @override
   HabitEntriesState build(String habitId) {
+    _isShared = ref.watch(
+      sharedHabitsProvider.select(
+        (async) => async.asData?.value.any((h) => h.id == habitId) ?? false,
+      ),
+    );
+
+    // Shared habits: read the week slice from the live Firestore stream.
+    if (_isShared) {
+      return ref
+          .watch(sharedHabitEntriesProvider(habitId))
+          .when(
+            data: (all) => HabitEntriesLoaded(_weekSlice(all)),
+            loading: () => const HabitEntriesLoading(),
+            error: (error, _) => HabitEntriesError(error.toString()),
+          );
+    }
+
     _loadEntriesForWeek();
     return const HabitEntriesLoading();
+  }
+
+  Map<DateTime, double> _weekSlice(Map<DateTime, double> all) {
+    final now = DateTime.now();
+    final weekStart = DateUtils.getWeekStart(now);
+    final weekEnd = DateUtils.getWeekEnd(now);
+    final week = <DateTime, double>{};
+    all.forEach((date, value) {
+      if (!date.isBefore(weekStart) && !date.isAfter(weekEnd)) {
+        week[date] = value;
+      }
+    });
+    return week;
   }
 
   /// Loads entries for the current week (Monday–Sunday).
@@ -79,8 +123,25 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
 
   /// Logs an entry for a specific date with the given value.
   Future<bool> logEntry(DateTime date, double value) async {
-    final logHabitEntry = ref.read(logHabitEntryUseCaseProvider);
     final normalizedDate = DateTime(date.year, date.month, date.day);
+
+    if (_isShared) {
+      // Shared logging: write to Firestore (last-write-wins). The live stream
+      // refreshes the week strip, intensity and stats reactively.
+      final uid = ref.read(currentUserProvider)?.uid;
+      if (uid == null) return false;
+      final result = await ref
+          .read(sharedHabitRepositoryProvider)
+          .logEntry(
+            habitId: habitId,
+            date: normalizedDate,
+            value: value,
+            loggedBy: uid,
+          );
+      return result.fold((_) => false, (_) => true);
+    }
+
+    final logHabitEntry = ref.read(logHabitEntryUseCaseProvider);
 
     // Optimistic update
     final previousState = state;
