@@ -1,0 +1,64 @@
+rules_version = '2';
+
+// Phase 1 baseline. `users` and `handles` are written ONLY by the
+// claimHandle / onAccountDelete Cloud Functions (admin SDK bypasses these
+// rules), so direct client writes are denied — this is what enforces handle
+// uniqueness and immutability. Habit/invite collections are added in later
+// phases and remain denied by default until then.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /handles/{handleLower} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Shared habits. Readable/writable only by participants; a habit can only
+    // be created by its own owner. (Phase 5 will tighten delete to owner-only.)
+    match /habits/{habitId} {
+      function isParticipant() {
+        return request.auth != null
+          && request.auth.uid in resource.data.participantIds;
+      }
+
+      allow read: if isParticipant();
+      // All habit-doc mutations (membership, metadata edits) go through Cloud
+      // Functions so they can be owner-gated and field-restricted; direct
+      // client writes are denied. Entry logging lives in the subcollection
+      // below, which keeps its own participant write rule.
+      allow update: if false;
+      // Deleting a shared habit removes it for everyone, so only the owner may —
+      // and in practice this goes through the deleteSharedHabit function, which
+      // also cleans up entries + invites.
+      allow delete: if request.auth != null
+        && request.auth.uid == resource.data.ownerId;
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.ownerId
+        && request.auth.uid in request.resource.data.participantIds;
+
+      // One entry doc per yyyy-MM-dd. Any participant of the parent habit may
+      // read/write it (shared logging arrives in Phase 4).
+      match /entries/{date} {
+        allow read, write: if request.auth != null
+          && request.auth.uid in
+             get(/databases/$(database)/documents/habits/$(habitId)).data.participantIds;
+      }
+    }
+
+    // Collaboration invites. Each party (sender + invitee) may read their own;
+    // all writes go through the sendInvite / respondToInvite Cloud Functions
+    // (admin SDK), so direct client writes are denied — accepting an invite
+    // adds a not-yet-participant to a habit, which rules can't safely express.
+    match /invites/{inviteId} {
+      allow read: if request.auth != null
+        && (resource.data.toUid == request.auth.uid
+            || resource.data.fromUid == request.auth.uid);
+      allow write: if false;
+    }
+  }
+}

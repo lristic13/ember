@@ -28,21 +28,25 @@ class ThemeNotifier extends _$ThemeNotifier {
 
   void _loadSavedTheme() {
     final savedTheme = _box?.get(_themeKey) as String?;
-    if (savedTheme == 'light') {
-      state = ThemeMode.light;
-    } else {
-      state = ThemeMode.dark;
-    }
+    state = switch (savedTheme) {
+      'light' => ThemeMode.light,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.dark,
+    };
   }
 
   void toggle() {
-    if (state == ThemeMode.dark) {
-      state = ThemeMode.light;
-      _box?.put(_themeKey, 'light');
-    } else {
-      state = ThemeMode.dark;
-      _box?.put(_themeKey, 'dark');
-    }
+    setMode(state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  /// Sets and persists the theme mode (Auto / Light / Dark).
+  void setMode(ThemeMode mode) {
+    state = mode;
+    _box?.put(_themeKey, switch (mode) {
+      ThemeMode.light => 'light',
+      ThemeMode.dark => 'dark',
+      ThemeMode.system => 'system',
+    });
   }
 
   bool get isDark => state == ThemeMode.dark;

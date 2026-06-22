@@ -59,6 +59,15 @@ doc/api/
 *.env.*
 secrets.dart
 
+# Signing & certs — keystores, APNs keys, certificates, provisioning profiles
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.cer
+*.mobileprovision
+
 # Misc
 *.log
 *.pyc
@@ -67,3 +76,14 @@ secrets.dart
 EMBER_INSTRUCTIONS.md
 CLAUDE.md
 COLLABORATION_FEATURE.md
+COLLABORATION_PHASE_0_1.md
+
+# Cloud Functions
+functions/node_modules/
+functions/lib/
+functions/.env
+functions/serviceAccount*.json
+
+# Firebase
+.firebase/
+*-debug.log

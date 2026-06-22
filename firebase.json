@@ -1,0 +1,40 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "ember-36b86",
+          "appId": "1:1048215039705:android:72a1b5771ed51e1647d8c8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "ember-36b86",
+          "appId": "1:1048215039705:ios:5a614731d5b2cdf847d8c8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "ember-36b86",
+          "configurations": {
+            "android": "1:1048215039705:android:72a1b5771ed51e1647d8c8",
+            "ios": "1:1048215039705:ios:5a614731d5b2cdf847d8c8"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20",
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run build"
+    ]
+  }
+}

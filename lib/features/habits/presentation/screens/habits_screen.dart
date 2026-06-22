@@ -29,7 +29,9 @@ class HabitsScreen extends ConsumerWidget {
           message: message,
           onRetry: () => ref.read(habitsViewModelProvider.notifier).refresh(),
         ),
-        HabitsLoaded(:final habits) => habits.isEmpty
+        // Empty/loaded is based on the MERGED list (personal + shared), so a
+        // user with only shared habits still sees their list.
+        HabitsLoaded() => ref.watch(sortedHabitsProvider).isEmpty
             ? const HabitsEmptyState()
             : const HabitsLoadedView(),
       },

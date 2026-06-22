@@ -10,6 +10,7 @@ import '../../viewmodels/habit_entries_viewmodel.dart';
 import '../../viewmodels/intensity_viewmodel.dart';
 import '../entry/entry_editor_bottom_sheet.dart';
 import '../heatmap/mini_month_heatmap.dart';
+import 'participant_avatars.dart';
 
 class HabitGridCard extends ConsumerWidget {
   final Habit habit;
@@ -55,6 +56,13 @@ class HabitGridCard extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  if (habit.isShared) ...[
+                    const SizedBox(width: 6),
+                    ParticipantAvatars(
+                      participants: habit.participants,
+                      size: 20,
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: AppDimensions.paddingXs),

@@ -3,8 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/constants/intensity_config.dart';
 import '../../../../core/utils/date_utils.dart';
+import '../../domain/entities/habit_entry.dart';
 import '../../domain/services/intensity_service.dart';
 import 'habits_providers.dart';
+import 'shared_habit_providers.dart';
 
 part 'intensity_viewmodel.g.dart';
 
@@ -22,18 +24,37 @@ Future<Map<DateTime, double>> habitIntensities(
     const Duration(days: IntensityConfig.rollingWindowDays),
   );
 
-  final getHabitEntries = ref.read(getHabitEntriesUseCaseProvider);
-  final result = await getHabitEntries.inRange(
-    habitId: habitId,
-    startDate: expandedStart,
-    endDate: endDate,
+  final isShared = ref.watch(
+    sharedHabitsProvider.select(
+      (async) => async.asData?.value.any((h) => h.id == habitId) ?? false,
+    ),
   );
 
-  if (result.isFailure) {
-    return <DateTime, double>{};
+  final List<HabitEntry> entries;
+  if (isShared) {
+    // Shared habit: build entries from the Firestore stream so intensity is
+    // computed over the shared history (same glow for every participant).
+    final map = await ref.watch(sharedHabitEntriesProvider(habitId).future);
+    entries = [
+      for (final entry in map.entries)
+        if (!entry.key.isBefore(expandedStart) && !entry.key.isAfter(endDate))
+          HabitEntry(
+            id: '$habitId|${entry.key.toIso8601String()}',
+            habitId: habitId,
+            date: entry.key,
+            value: entry.value,
+          ),
+    ];
+  } else {
+    final getHabitEntries = ref.read(getHabitEntriesUseCaseProvider);
+    final result = await getHabitEntries.inRange(
+      habitId: habitId,
+      startDate: expandedStart,
+      endDate: endDate,
+    );
+    if (result.isFailure) return <DateTime, double>{};
+    entries = result.valueOrNull ?? [];
   }
-
-  final entries = result.valueOrNull ?? [];
 
   // Generate list of target dates
   final targetDates = <DateTime>[];

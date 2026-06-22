@@ -7,6 +7,7 @@ import '../../../../../shared/widgets/ember_icon_tile.dart';
 import '../../../domain/entities/habit.dart';
 import 'habit_streak_chip.dart';
 import 'home_week_strip.dart';
+import 'participant_avatars.dart';
 
 class HabitCardContent extends ConsumerWidget {
   final Habit habit;
@@ -45,11 +46,25 @@ class HabitCardContent extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        habit.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: EmberText.display(19, color: palette.text),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              habit.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: EmberText.display(19, color: palette.text),
+                            ),
+                          ),
+                          // For shared habits, show who's in it next to the name.
+                          if (habit.isShared) ...[
+                            const SizedBox(width: 8),
+                            ParticipantAvatars(
+                              participants: habit.participants,
+                              size: 22,
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 3),
                       HabitStreakChip(habitId: habit.id, color: color),

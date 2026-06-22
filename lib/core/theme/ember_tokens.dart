@@ -13,6 +13,7 @@ class EmberPalette {
   final Color bg;
   final Color card;
   final Color cardHi;
+  final Color field; // input fields, segmented track
   final Color border;
   final Color borderSoft;
   final Color text;
@@ -23,6 +24,7 @@ class EmberPalette {
     required this.bg,
     required this.card,
     required this.cardHi,
+    required this.field,
     required this.border,
     required this.borderSoft,
     required this.text,
@@ -34,6 +36,7 @@ class EmberPalette {
     bg: AppColors.background,
     card: AppColors.surface,
     cardHi: AppColors.surfaceLight,
+    field: Color(0xFF131C16),
     border: AppColors.border,
     borderSoft: AppColors.borderSoft,
     text: AppColors.textPrimary,
@@ -45,6 +48,7 @@ class EmberPalette {
     bg: AppColorsLight.background,
     card: AppColorsLight.surface,
     cardHi: AppColorsLight.surfaceLight,
+    field: Color(0xFFEDF1ED),
     border: AppColorsLight.border,
     borderSoft: AppColorsLight.borderSoft,
     text: AppColorsLight.textPrimary,
@@ -136,4 +140,31 @@ abstract class EmberText {
     letterSpacing: size * 0.14,
     height: 1.2,
   );
+}
+
+/// Semantic colours introduced by the account screens: `danger` (destructive
+/// actions + error/validation states) and `good` (handle available). Constant
+/// across themes, like [EmberAccent].
+abstract class EmberSemantic {
+  // danger — destructive / error
+  static const Color danger = Color(0xFFFF6B6B);
+  static const Color dangerSoft = Color(0xFFFF8A8A);
+  static const Color dangerDeep = Color(0xFFE84545);
+  static const Color ink = Color(0xFF1E0A00); // text on a danger fill
+  static Color get tint => danger.withValues(alpha: 0.09);
+  static Color get line => danger.withValues(alpha: 0.34);
+
+  /// 155° fill for the destructive (Delete) button.
+  static LinearGradient get dangerFill => LinearGradient(
+    begin: EmberGradients.begin155,
+    end: EmberGradients.end155,
+    colors: const [danger, dangerDeep],
+  );
+
+  // good — handle available
+  static const Color good = Color(0xFF5FC56B);
+  static const Color goodDeep = Color(0xFF36A646);
+  static const Color goodInk = Color(0xFF04210C);
+  static Color goodGlow(double opacity) => good.withValues(alpha: opacity);
+  static Color get goodChip => good.withValues(alpha: 0.13);
 }

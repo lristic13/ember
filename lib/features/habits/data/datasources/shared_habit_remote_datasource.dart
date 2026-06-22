@@ -1,0 +1,160 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+
+import '../../../../core/constants/firebase_constants.dart';
+import '../../domain/entities/habit.dart';
+import '../models/shared_habit_model.dart';
+
+/// Reads shared habits + their entries from Firestore, and calls the
+/// membership Cloud Functions. Firestore/Functions types stay in the data layer.
+class SharedHabitRemoteDatasource {
+  SharedHabitRemoteDatasource({
+    FirebaseFirestore? firestore,
+    FirebaseFunctions? functions,
+  }) : _db = firestore ?? FirebaseFirestore.instance,
+       _functions =
+           functions ??
+           FirebaseFunctions.instanceFor(region: kCloudFunctionsRegion);
+
+  final FirebaseFirestore _db;
+  final FirebaseFunctions _functions;
+
+  /// Streams the shared habits the given user participates in.
+  Stream<List<Habit>> watchSharedHabits(String uid) {
+    return _db
+        .collection('habits')
+        .where('participantIds', arrayContains: uid)
+        .snapshots()
+        .map(
+          (snap) =>
+              snap.docs.map((d) => sharedHabitFromDoc(d.id, d.data())).toList(),
+        );
+  }
+
+  /// Logs an entry on a shared habit (one doc per `yyyy-MM-dd`, last-write-wins).
+  Future<void> logEntry({
+    required String habitId,
+    required DateTime date,
+    required double value,
+    required String loggedBy,
+  }) async {
+    await _db
+        .collection('habits')
+        .doc(habitId)
+        .collection('entries')
+        .doc(_docId(date))
+        .set({
+          'value': value,
+          'loggedBy': loggedBy,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+  }
+
+  /// Creates a shared `habits/{habit.id}` doc owned by [ownerUid] and copies
+  /// [entries] into its `entries` subcollection. Entry writes are chunked to
+  /// stay under Firestore's 500-op batch limit.
+  Future<void> createSharedHabit({
+    required Habit habit,
+    required Map<DateTime, double> entries,
+    required String ownerUid,
+    String? ownerHandle,
+    String? ownerDisplayName,
+  }) async {
+    final habitRef = _db.collection('habits').doc(habit.id);
+    await habitRef.set({
+      'name': habit.name,
+      'emoji': habit.emoji,
+      'trackingType': habit.trackingType.name,
+      'unit': habit.unit,
+      'gradientId': habit.gradientId,
+      'ownerId': ownerUid,
+      'participantIds': [ownerUid],
+      'participants': {
+        ownerUid: {
+          'role': 'owner',
+          'handle': ownerHandle,
+          'displayName': ownerDisplayName,
+        },
+      },
+      'createdAt': Timestamp.fromDate(habit.createdAt),
+    });
+
+    final items = entries.entries.toList();
+    for (var i = 0; i < items.length; i += 400) {
+      final batch = _db.batch();
+      for (final entry in items.skip(i).take(400)) {
+        batch.set(habitRef.collection('entries').doc(_docId(entry.key)), {
+          'value': entry.value,
+          'loggedBy': ownerUid,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+      await batch.commit();
+    }
+  }
+
+  Future<void> leaveHabit(String habitId) async {
+    await _functions.httpsCallable('leaveHabit').call(<String, dynamic>{
+      'habitId': habitId,
+    });
+  }
+
+  Future<void> removeParticipant({
+    required String habitId,
+    required String uid,
+  }) async {
+    await _functions.httpsCallable('removeParticipant').call(<String, dynamic>{
+      'habitId': habitId,
+      'uid': uid,
+    });
+  }
+
+  Future<void> deleteSharedHabit(String habitId) async {
+    await _functions.httpsCallable('deleteSharedHabit').call(<String, dynamic>{
+      'habitId': habitId,
+    });
+  }
+
+  Future<void> updateSharedHabit({
+    required String habitId,
+    required String name,
+    required String trackingType,
+    String? unit,
+    String? emoji,
+    required String gradientId,
+  }) async {
+    await _functions.httpsCallable('updateSharedHabit').call(<String, dynamic>{
+      'habitId': habitId,
+      'name': name,
+      'trackingType': trackingType,
+      'unit': unit,
+      'emoji': emoji,
+      'gradientId': gradientId,
+    });
+  }
+
+  String _docId(DateTime date) =>
+      '${date.year.toString().padLeft(4, '0')}-'
+      '${date.month.toString().padLeft(2, '0')}-'
+      '${date.day.toString().padLeft(2, '0')}';
+
+  /// Streams a shared habit's entries as date→value (one doc per `yyyy-MM-dd`).
+  Stream<Map<DateTime, double>> watchEntries(String habitId) {
+    return _db
+        .collection('habits')
+        .doc(habitId)
+        .collection('entries')
+        .snapshots()
+        .map((snap) {
+          final map = <DateTime, double>{};
+          for (final doc in snap.docs) {
+            final date = DateTime.tryParse(doc.id);
+            final value = (doc.data()['value'] as num?)?.toDouble();
+            if (date != null && value != null) {
+              map[DateTime(date.year, date.month, date.day)] = value;
+            }
+          }
+          return map;
+        });
+  }
+}

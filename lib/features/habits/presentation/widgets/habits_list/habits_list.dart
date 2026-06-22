@@ -33,6 +33,7 @@ class HabitsList extends ConsumerWidget {
           final ids = habits.map((h) => h.id).toList();
           ref.read(habitsOrderProvider.notifier).reorder(ids, oldIndex, newIndex);
         },
+        proxyDecorator: _liftedCardDecorator,
         itemBuilder: (context, index) => Padding(
           key: ValueKey(habits[index].id),
           padding: EdgeInsets.only(
@@ -56,4 +57,28 @@ class HabitsList extends ConsumerWidget {
       itemBuilder: (context, index) => HabitCard(habit: habits[index]),
     );
   }
+}
+
+/// Lifts a dragged habit card with a rounded shadow that matches the card's
+/// 22px corners (the default proxy uses a square `Material`, so its shadow
+/// shows square corners behind the rounded card).
+Widget _liftedCardDecorator(
+  Widget child,
+  int index,
+  Animation<double> animation,
+) {
+  return AnimatedBuilder(
+    animation: animation,
+    builder: (context, innerChild) {
+      final t = Curves.easeInOut.transform(animation.value);
+      return Material(
+        color: Colors.transparent,
+        elevation: t * 12,
+        shadowColor: Colors.black.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(22),
+        child: innerChild,
+      );
+    },
+    child: child,
+  );
 }

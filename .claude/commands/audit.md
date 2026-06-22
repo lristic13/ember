@@ -1,0 +1,1 @@
+Analyze the codebase and grade it 1-10. List all the vulnerabilities found and elaborate why they are vulerabilities. 
