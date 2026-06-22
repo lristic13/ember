@@ -519,10 +519,16 @@ export const respondToInvite = onCall({region: REGION}, async (request) => {
   return {ok: true};
 });
 
+/** Private per-user doc holding FCM device tokens (never client-readable). */
+function pushDoc(uid: string) {
+  return db.collection("users").doc(uid).collection("private").doc("push");
+}
+
 /**
  * Stores an FCM device token for the caller so they can receive push
- * notifications. Tokens are kept in `users/{uid}.fcmTokens` (a set via
- * arrayUnion); the invite trigger prunes dead ones.
+ * notifications. Tokens live in the private `users/{uid}/private/push` doc (a
+ * set via arrayUnion) — NOT on the public profile doc — so no other user can
+ * read them. The invite trigger prunes dead ones.
  */
 export const registerDeviceToken = onCall({region: REGION}, async (request) => {
   const uid = request.auth?.uid;
@@ -533,10 +539,16 @@ export const registerDeviceToken = onCall({region: REGION}, async (request) => {
   if (!token) {
     throw new HttpsError("invalid-argument", "Missing token.");
   }
+  await pushDoc(uid).set(
+    {fcmTokens: FieldValue.arrayUnion(token)},
+    {merge: true}
+  );
+  // Migrate off the old public location so tokens stop being world-readable.
   await db
     .collection("users")
     .doc(uid)
-    .set({fcmTokens: FieldValue.arrayUnion(token)}, {merge: true});
+    .update({fcmTokens: FieldValue.delete()})
+    .catch(() => {});
   return {ok: true};
 });
 
@@ -551,8 +563,8 @@ export const onInviteCreated = onDocumentCreated(
     if (!invite || invite.status !== "pending") return;
 
     const toUid = invite.toUid as string;
-    const userSnap = await db.collection("users").doc(toUid).get();
-    const tokens = (userSnap.get("fcmTokens") ?? []) as string[];
+    const pushSnap = await pushDoc(toUid).get();
+    const tokens = (pushSnap.get("fcmTokens") ?? []) as string[];
     if (tokens.length === 0) return;
 
     const fromName =
@@ -582,10 +594,9 @@ export const onInviteCreated = onDocumentCreated(
       }
     });
     if (invalid.length > 0) {
-      await db
-        .collection("users")
-        .doc(toUid)
-        .update({fcmTokens: FieldValue.arrayRemove(...invalid)});
+      await pushDoc(toUid).update({
+        fcmTokens: FieldValue.arrayRemove(...invalid),
+      });
       logger.info("onInviteCreated:prunedTokens", {count: invalid.length});
     }
   }
@@ -665,5 +676,52 @@ export const setTogetherEntry = onCall({region: REGION}, async (request) => {
     });
   });
 
+  return {ok: true};
+});
+
+/**
+ * Logs an entry on an "Anyone" shared habit (last-write-wins). Routed through a
+ * function so the `entries` subcollection can deny direct participant writes —
+ * a participant can only log via this, which stamps `loggedBy` to the caller.
+ *
+ * Throws:
+ *  - unauthenticated    — not signed in
+ *  - invalid-argument   — missing/invalid habit id, date or value
+ *  - not-found          — habit doesn't exist
+ *  - permission-denied  — caller isn't a participant
+ */
+export const logSharedEntry = onCall({region: REGION}, async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) {
+    throw new HttpsError("unauthenticated", "Sign in first.");
+  }
+
+  const habitId = String(request.data?.habitId ?? "").trim();
+  const date = String(request.data?.date ?? "").trim();
+  const value = Number(request.data?.value ?? 0);
+  if (
+    !habitId ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+    throw new HttpsError("invalid-argument", "Missing habit, date or value.");
+  }
+
+  const habitRef = db.collection("habits").doc(habitId);
+  const habitSnap = await habitRef.get();
+  if (!habitSnap.exists) {
+    throw new HttpsError("not-found", "Habit not found.");
+  }
+  const participantIds = (habitSnap.get("participantIds") ?? []) as string[];
+  if (!participantIds.includes(uid)) {
+    throw new HttpsError("permission-denied", "Not your habit.");
+  }
+
+  await habitRef.collection("entries").doc(date).set({
+    value,
+    loggedBy: uid,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
   return {ok: true};
 });

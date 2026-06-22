@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/ember_tokens.dart';
 
-/// Hero completion summary: "You showed up N of M times" with a big accent
-/// percentage and a soft accent glow.
+/// Hero summary: "You showed up the most for [habitName]" with that habit's big
+/// accent consistency percentage and a soft accent glow.
 class InsightsCompletionHero extends StatelessWidget {
   final String rangeLabel;
-  final int done;
-  final int possible;
+  final String habitName;
   final int percent;
 
   const InsightsCompletionHero({
     super.key,
     required this.rangeLabel,
-    required this.done,
-    required this.possible,
+    required this.habitName,
     required this.percent,
   });
 
@@ -61,12 +59,12 @@ class InsightsCompletionHero extends StatelessWidget {
                         text: TextSpan(
                           style: EmberText.display(24, color: palette.text, letterSpacingEm: -0.02, height: 1.15),
                           children: [
-                            const TextSpan(text: 'You showed up '),
+                            const TextSpan(text: 'You showed up the most for '),
                             TextSpan(
-                              text: '$done of $possible',
+                              text: habitName,
                               style: TextStyle(color: EmberAccent.neon),
                             ),
-                            const TextSpan(text: ' times.'),
+                            const TextSpan(text: '.'),
                           ],
                         ),
                       ),

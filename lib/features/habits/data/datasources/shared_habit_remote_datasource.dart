@@ -31,23 +31,21 @@ class SharedHabitRemoteDatasource {
         );
   }
 
-  /// Logs an entry on a shared habit (one doc per `yyyy-MM-dd`, last-write-wins).
+  /// Logs an entry on an "Anyone" shared habit (one doc per `yyyy-MM-dd`,
+  /// last-write-wins). Goes through the `logSharedEntry` function so the entries
+  /// subcollection can deny direct participant writes (the function stamps
+  /// `loggedBy` from auth); [loggedBy] is therefore ignored.
   Future<void> logEntry({
     required String habitId,
     required DateTime date,
     required double value,
     required String loggedBy,
   }) async {
-    await _db
-        .collection('habits')
-        .doc(habitId)
-        .collection('entries')
-        .doc(_docId(date))
-        .set({
-          'value': value,
-          'loggedBy': loggedBy,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+    await _functions.httpsCallable('logSharedEntry').call(<String, dynamic>{
+      'habitId': habitId,
+      'date': _docId(date),
+      'value': value,
+    });
   }
 
   /// Creates a shared `habits/{habit.id}` doc owned by [ownerUid] and copies

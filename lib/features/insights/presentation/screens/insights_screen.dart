@@ -65,9 +65,21 @@ class InsightsScreen extends ConsumerWidget {
             ],
           ),
         ),
-        InsightsLoaded(:final period, :final insights) => insights.isEmpty
-            ? const InsightsEmptyState()
-            : _InsightsBody(period: period, insights: insights, palette: palette),
+        InsightsLoaded(
+          :final period,
+          :final insights,
+          :final allTimeTopName,
+          :final allTimeTopPercent,
+        ) =>
+          insights.isEmpty
+              ? const InsightsEmptyState()
+              : _InsightsBody(
+                  period: period,
+                  insights: insights,
+                  topName: allTimeTopName ?? insights.first.activity.name,
+                  topPercent: allTimeTopPercent,
+                  palette: palette,
+                ),
       },
     );
   }
@@ -76,31 +88,30 @@ class InsightsScreen extends ConsumerWidget {
 class _InsightsBody extends StatelessWidget {
   final InsightsPeriod period;
   final List<ActivityInsight> insights;
+  final String topName;
+  final int topPercent;
   final EmberPalette palette;
 
   const _InsightsBody({
     required this.period,
     required this.insights,
+    required this.topName,
+    required this.topPercent,
     required this.palette,
   });
 
   @override
   Widget build(BuildContext context) {
-    final done = insights.fold<int>(0, (s, i) => s + i.daysLogged);
-    final possible = insights.fold<int>(0, (s, i) => s + i.totalDays);
-    final pct = possible == 0 ? 0 : ((done / possible) * 100).round();
-    final rangeLabel = period.days == 7 ? 'THIS WEEK' : 'LAST ${period.days} DAYS';
-
     final topInset = MediaQuery.of(context).padding.top + kToolbarHeight;
 
     return ListView(
       padding: EdgeInsets.fromLTRB(20, topInset + 12, 20, 40),
       children: [
+        // Hero is all-time; the ranked list below is the selected period.
         InsightsCompletionHero(
-          rangeLabel: rangeLabel,
-          done: done,
-          possible: possible,
-          percent: pct,
+          rangeLabel: 'ALL TIME',
+          habitName: topName,
+          percent: topPercent,
         ),
         const SizedBox(height: 28),
         Padding(
