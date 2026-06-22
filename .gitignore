@@ -59,6 +59,15 @@ doc/api/
 *.env.*
 secrets.dart
 
+# Signing & certs — keystores, APNs keys, certificates, provisioning profiles
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.cer
+*.mobileprovision
+
 # Misc
 *.log
 *.pyc
