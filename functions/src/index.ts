@@ -1,7 +1,9 @@
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";
 import {getAuth} from "firebase-admin/auth";
+import {getMessaging} from "firebase-admin/messaging";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
+import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
 
 initializeApp();
@@ -518,3 +520,75 @@ export const respondToInvite = onCall({region: REGION}, async (request) => {
 
   return {ok: true};
 });
+
+/**
+ * Stores an FCM device token for the caller so they can receive push
+ * notifications. Tokens are kept in `users/{uid}.fcmTokens` (a set via
+ * arrayUnion); the invite trigger prunes dead ones.
+ */
+export const registerDeviceToken = onCall({region: REGION}, async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) {
+    throw new HttpsError("unauthenticated", "Sign in first.");
+  }
+  const token = String(request.data?.token ?? "").trim();
+  if (!token) {
+    throw new HttpsError("invalid-argument", "Missing token.");
+  }
+  await db
+    .collection("users")
+    .doc(uid)
+    .set({fcmTokens: FieldValue.arrayUnion(token)}, {merge: true});
+  return {ok: true};
+});
+
+/**
+ * Pushes a notification to the invitee whenever a pending invite is created.
+ * Dead/expired tokens are removed from the user's `fcmTokens` on failure.
+ */
+export const onInviteCreated = onDocumentCreated(
+  {region: REGION, document: "invites/{inviteId}"},
+  async (event) => {
+    const invite = event.data?.data();
+    if (!invite || invite.status !== "pending") return;
+
+    const toUid = invite.toUid as string;
+    const userSnap = await db.collection("users").doc(toUid).get();
+    const tokens = (userSnap.get("fcmTokens") ?? []) as string[];
+    if (tokens.length === 0) return;
+
+    const fromName =
+      invite.fromDisplayName ||
+      (invite.fromHandle ? `@${invite.fromHandle}` : "Someone");
+    const habitName = invite.habitName || "a habit";
+
+    const response = await getMessaging().sendEachForMulticast({
+      tokens,
+      notification: {
+        title: "New habit invite",
+        body: `${fromName} invited you to ${habitName}`,
+      },
+      data: {type: "invite", inviteId: event.params.inviteId},
+      apns: {payload: {aps: {sound: "default"}}},
+    });
+
+    const invalid: string[] = [];
+    response.responses.forEach((res, i) => {
+      const code = res.error?.code;
+      if (
+        !res.success &&
+        (code === "messaging/registration-token-not-registered" ||
+          code === "messaging/invalid-registration-token")
+      ) {
+        invalid.push(tokens[i]);
+      }
+    });
+    if (invalid.length > 0) {
+      await db
+        .collection("users")
+        .doc(toUid)
+        .update({fcmTokens: FieldValue.arrayRemove(...invalid)});
+      logger.info("onInviteCreated:prunedTokens", {count: invalid.length});
+    }
+  }
+);

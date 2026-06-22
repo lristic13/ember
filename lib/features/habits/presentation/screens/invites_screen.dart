@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/ember_tokens.dart';
 import '../viewmodels/invite_providers.dart';
 import '../widgets/invites/invite_card.dart';
@@ -9,6 +11,16 @@ import '../widgets/invites/invite_card.dart';
 /// are answered.
 class InvitesScreen extends ConsumerWidget {
   const InvitesScreen({super.key});
+
+  // Opened from a notification tap, this is the root route (go() replaces the
+  // stack), so there's nothing to pop — fall back to Home in that case.
+  void _close(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +43,7 @@ class InvitesScreen extends ConsumerWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
-                        onTap: () => Navigator.of(context).maybePop(),
+                        onTap: () => _close(context),
                         behavior: HitTestBehavior.opaque,
                         child: Icon(
                           Icons.close_rounded,

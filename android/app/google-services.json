@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "1048215039705-5nvul1i95p2g83sdbu3sol31bjuepvri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lristic.ember",
+            "certificate_hash": "d70bc7b1ae70f7d921cb90fb8cdf839f5a7017eb"
+          }
+        },
+        {
+          "client_id": "1048215039705-rm0bkf8ro2jk1um3n2bra6osj24luv3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lristic.ember",
+            "certificate_hash": "9ccf3de9cc403fbde70b2964708dba61e22f88dc"
+          }
+        },
+        {
+          "client_id": "1048215039705-sfmhjdjnk5icbprv0n16jtq3j21ge80u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lristic.ember",
+            "certificate_hash": "ff4436eaf4bb1ca41a7b61accb68af0814384951"
+          }
+        },
+        {
           "client_id": "1048215039705-r83mtm91on5hpj2ko5nrur4anv0ld56t.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +53,13 @@
             {
               "client_id": "1048215039705-r83mtm91on5hpj2ko5nrur4anv0ld56t.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1048215039705-bfp2kue07tnpfn605gjnp23va8lhiu3m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lristic.ember"
+              }
             }
           ]
         }

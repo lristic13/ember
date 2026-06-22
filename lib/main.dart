@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -14,8 +15,14 @@ import 'features/habits/presentation/viewmodels/habit_order_provider.dart';
 import 'features/habits/presentation/viewmodels/habits_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/auth_providers.dart';
 import 'features/habits/presentation/viewmodels/intensity_viewmodel.dart';
+import 'features/notifications/push_notification_service.dart';
 import 'features/widgets/presentation/providers/home_widget_providers.dart';
 import 'firebase_options.dart';
+
+/// Required by FCM, even though OS-displayed notification messages need no work
+/// here. Must be a top-level, entry-point function.
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +31,25 @@ Future<void> main() async {
 
   await _initializeHive();
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  final push = PushNotificationService();
+  await push.initialize();
+
   // Create provider container for widget initialization
   final container = ProviderContainer();
 
-  // Let the router's redirect read auth state, and re-run it on auth changes.
+  // Let the router's redirect read auth state, re-run it on auth changes, and
+  // register/clear this device's push token as the user signs in/out.
   gRouterContainer = container;
-  container.listen(authStateProvider, (_, _) => gAuthRefresh.value++);
+  container.listen(authStateProvider, (previous, next) {
+    gAuthRefresh.value++;
+    final user = next.asData?.value;
+    if (user != null && user.hasHandle) {
+      push.registerForUser();
+    } else if (user == null && previous?.asData?.value != null) {
+      push.clearForUser();
+    }
+  });
 
   // Initialize home widget service
   await _initializeHomeWidget(container);
