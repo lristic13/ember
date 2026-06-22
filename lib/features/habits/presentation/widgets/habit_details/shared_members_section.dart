@@ -5,7 +5,6 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/theme/ember_tokens.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../../auth/presentation/viewmodels/auth_providers.dart';
-import '../../../../auth/presentation/widgets/profile_action_button.dart';
 import '../../../domain/entities/habit.dart';
 import '../../../domain/entities/habit_participant.dart';
 import '../../viewmodels/invite_providers.dart';
@@ -59,17 +58,6 @@ class SharedMembersSection extends ConsumerWidget {
               invite: invite,
               onCancel: () => _cancelInvite(context, ref, invite.id),
             ),
-          const SizedBox(height: 14),
-          ProfileActionButton(
-            icon: isOwner
-                ? Icons.delete_outline_rounded
-                : Icons.logout_rounded,
-            label: isOwner ? 'Delete habit' : 'Leave habit',
-            danger: true,
-            onPressed: () => isOwner
-                ? _deleteHabit(context, ref)
-                : _leaveHabit(context, ref),
-          ),
         ],
       ),
     );
@@ -104,46 +92,6 @@ class SharedMembersSection extends ConsumerWidget {
     final result =
         await ref.read(inviteRepositoryProvider).cancelInvite(inviteId);
     if (context.mounted) _snackOnError(context, result);
-  }
-
-  Future<void> _leaveHabit(BuildContext context, WidgetRef ref) async {
-    final confirmed = await ConfirmSheet.show(
-      context,
-      title: 'Leave ${habit.name}?',
-      message: "You'll stop sharing this habit. Your own history stays in it.",
-      confirmLabel: 'Leave',
-      danger: true,
-    );
-    if (confirmed != true) return;
-
-    final result = await ref
-        .read(sharedHabitRepositoryProvider)
-        .leaveHabit(habit.id);
-    if (context.mounted) _onLeaveOrDelete(context, result);
-  }
-
-  Future<void> _deleteHabit(BuildContext context, WidgetRef ref) async {
-    final confirmed = await ConfirmSheet.show(
-      context,
-      title: 'Delete ${habit.name}?',
-      message: 'This deletes it for everyone, with all of its history.',
-      confirmLabel: 'Delete',
-      danger: true,
-    );
-    if (confirmed != true) return;
-
-    final result = await ref
-        .read(sharedHabitRepositoryProvider)
-        .deleteSharedHabit(habit.id);
-    if (context.mounted) _onLeaveOrDelete(context, result);
-  }
-
-  void _onLeaveOrDelete(BuildContext context, Result<void, Failure> result) {
-    if (result.isFailure) {
-      _snackOnError(context, result);
-      return;
-    }
-    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   void _snackOnError(BuildContext context, Result<void, Failure> result) {

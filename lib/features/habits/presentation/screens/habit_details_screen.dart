@@ -12,8 +12,10 @@ import '../../domain/entities/habit.dart';
 import '../viewmodels/habits_viewmodel.dart';
 import '../viewmodels/shared_habit_providers.dart';
 import '../widgets/entry/delete_confirmation_bottom_sheet.dart';
+import '../widgets/habit_details/completion_mode_toggle.dart';
 import '../widgets/habit_details/habit_details_content.dart';
 import '../widgets/habit_form/habit_form.dart';
+import '../widgets/invites/completion_mode_sheet.dart';
 import '../widgets/invites/invite_sheet.dart';
 
 class HabitDetailsScreen extends ConsumerWidget {
@@ -102,11 +104,22 @@ class HabitDetailsScreen extends ConsumerWidget {
   }
 
   Future<void> _showInviteSheet(BuildContext context, Habit habit) async {
-    final handle = await showInviteSheet(context, habit);
-    if (handle != null && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invite sent to @$handle')),
-      );
+    var toInvite = habit;
+    // Promoting a personal habit: ask Everyone/Anyone first. Only completion
+    // habits can be Everyone (it's per-person check-ins), so quantity habits
+    // skip the sheet and promote as Anyone.
+    if (!habit.isShared && habit.isCompletion) {
+      final mode = await showCompletionModeSheet(context);
+      if (mode == null) return; // cancelled
+      toInvite = habit.copyWith(completionMode: mode);
+    }
+    if (!context.mounted) return;
+
+    final message = await showInviteSheet(context, toInvite);
+    if (message != null && context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -141,6 +154,9 @@ class HabitDetailsScreen extends ConsumerWidget {
 
   void _showEditHabitSheet(BuildContext context, WidgetRef ref, Habit habit) {
     final theme = Theme.of(context);
+    // Owner can switch the completion rule on a shared completion habit.
+    var selectedMode = habit.completionMode;
+    final canEditMode = habit.isShared && habit.isCompletion;
 
     showModalBottomSheet(
       context: context,
@@ -200,6 +216,15 @@ class HabitDetailsScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: AppDimensions.paddingMd),
+                  if (canEditMode) ...[
+                    StatefulBuilder(
+                      builder: (ctx, setLocal) => CompletionModeToggle(
+                        mode: selectedMode,
+                        onChanged: (m) => setLocal(() => selectedMode = m),
+                      ),
+                    ),
+                    const SizedBox(height: AppDimensions.paddingMd),
+                  ],
                   HabitForm(
                     initialName: habit.name,
                     initialTrackingType: habit.trackingType,
@@ -219,6 +244,7 @@ class HabitDetailsScreen extends ConsumerWidget {
                                   unit: unit,
                                   emoji: emoji,
                                   gradientId: gradientId,
+                                  completionMode: selectedMode,
                                 );
                             if (!sheetContext.mounted) return;
                             result.fold(

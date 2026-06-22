@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart' show FirebaseFunctionsExce
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/result.dart';
+import '../../domain/entities/completion_mode.dart';
 import '../../domain/entities/habit.dart';
 import '../../domain/entities/tracking_type.dart';
 import '../../domain/repositories/shared_habit_repository.dart';
@@ -19,6 +20,23 @@ class SharedHabitRepositoryImpl implements SharedHabitRepository {
   @override
   Stream<Map<DateTime, double>> watchSharedEntries(String habitId) =>
       _datasource.watchEntries(habitId);
+
+  @override
+  Stream<Map<DateTime, Map<String, double>>> watchChecks(String habitId) =>
+      _datasource.watchChecks(habitId);
+
+  @override
+  Future<Result<void, Failure>> setTogetherEntry({
+    required String habitId,
+    required DateTime date,
+    required double value,
+  }) => _call(
+    () => _datasource.setTogetherEntry(
+      habitId: habitId,
+      date: date,
+      value: value,
+    ),
+  );
 
   @override
   Future<Result<void, Failure>> logEntry({
@@ -63,6 +81,27 @@ class SharedHabitRepositoryImpl implements SharedHabitRepository {
   }
 
   @override
+  Future<Result<void, Failure>> createSharedHabit({
+    required Habit habit,
+    required String ownerUid,
+    String? ownerHandle,
+    String? ownerDisplayName,
+  }) async {
+    try {
+      await _datasource.createSharedHabit(
+        habit: habit,
+        entries: const {},
+        ownerUid: ownerUid,
+        ownerHandle: ownerHandle,
+        ownerDisplayName: ownerDisplayName,
+      );
+      return const Success(null);
+    } catch (e) {
+      return Err(NetworkFailure('Failed to create shared habit: $e'));
+    }
+  }
+
+  @override
   Future<Result<void, Failure>> leaveHabit(String habitId) =>
       _call(() => _datasource.leaveHabit(habitId));
 
@@ -84,6 +123,7 @@ class SharedHabitRepositoryImpl implements SharedHabitRepository {
     String? unit,
     String? emoji,
     required String gradientId,
+    required HabitCompletionMode completionMode,
   }) => _call(
     () => _datasource.updateSharedHabit(
       habitId: habitId,
@@ -92,6 +132,7 @@ class SharedHabitRepositoryImpl implements SharedHabitRepository {
       unit: unit,
       emoji: emoji,
       gradientId: gradientId,
+      completionMode: completionMode.name,
     ),
   );
 

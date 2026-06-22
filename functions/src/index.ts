@@ -358,6 +358,9 @@ export const updateSharedHabit = onCall({region: REGION}, async (request) => {
   if (data.trackingType === "completion" || data.trackingType === "quantity") {
     update.trackingType = data.trackingType;
   }
+  if (data.completionMode === "any" || data.completionMode === "all") {
+    update.completionMode = data.completionMode;
+  }
 
   if (Object.keys(update).length === 0) {
     throw new HttpsError("invalid-argument", "Nothing to update.");
@@ -392,7 +395,6 @@ export const sendInvite = onCall({region: REGION}, async (request) => {
   if (!habitId || !HANDLE_RE.test(toHandle)) {
     throw new HttpsError("invalid-argument", "Missing habit or handle.");
   }
-  logger.info("sendInvite:start", {fromUid, habitId, toHandle});
 
   const handleSnap = await db.collection("handles").doc(toHandle).get();
   if (!handleSnap.exists) {
@@ -402,7 +404,6 @@ export const sendInvite = onCall({region: REGION}, async (request) => {
   if (toUid === fromUid) {
     throw new HttpsError("failed-precondition", "You can't invite yourself.");
   }
-  logger.info("sendInvite:resolved", {toUid});
 
   const habitRef = db.collection("habits").doc(habitId);
   const habitSnap = await habitRef.get();
@@ -417,7 +418,6 @@ export const sendInvite = onCall({region: REGION}, async (request) => {
   if (participantIds.includes(toUid)) {
     throw new HttpsError("already-exists", "They're already in this habit.");
   }
-  logger.info("sendInvite:habitOk", {participants: participantIds.length});
 
   const dup = await db
     .collection("invites")
@@ -429,11 +429,10 @@ export const sendInvite = onCall({region: REGION}, async (request) => {
   if (!dup.empty) {
     throw new HttpsError("already-exists", "They've already been invited.");
   }
-  logger.info("sendInvite:noDup");
 
   const fromSnap = await db.collection("users").doc(fromUid).get();
 
-  const created = await db.collection("invites").add({
+  await db.collection("invites").add({
     habitId,
     habitName: habit.name ?? "",
     habitEmoji: habit.emoji ?? null,
@@ -445,7 +444,6 @@ export const sendInvite = onCall({region: REGION}, async (request) => {
     status: "pending",
     createdAt: FieldValue.serverTimestamp(),
   });
-  logger.info("sendInvite:done", {inviteId: created.id});
 
   return {ok: true};
 });
@@ -592,3 +590,80 @@ export const onInviteCreated = onDocumentCreated(
     }
   }
 );
+
+/**
+ * Sets the caller's own contribution for a day (`yyyy-MM-dd`) on an "Everyone"
+ * shared habit: [value] is 1 for a check-in (completion) or the logged amount
+ * (quantity); 0 clears it. The group's `value` is recomputed so the day only
+ * "counts" once *every* participant has logged something — 1 for completion,
+ * the sum of amounts for quantity, else 0. A participant only ever writes their
+ * own contribution.
+ *
+ * Throws:
+ *  - unauthenticated    — not signed in
+ *  - invalid-argument   — missing/invalid habit id, date or value
+ *  - not-found          — habit doesn't exist
+ *  - permission-denied  — caller isn't a participant
+ */
+export const setTogetherEntry = onCall({region: REGION}, async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) {
+    throw new HttpsError("unauthenticated", "Sign in first.");
+  }
+
+  const habitId = String(request.data?.habitId ?? "").trim();
+  const date = String(request.data?.date ?? "").trim();
+  const value = Number(request.data?.value ?? 0);
+  if (
+    !habitId ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+    throw new HttpsError("invalid-argument", "Missing habit, date or value.");
+  }
+
+  const habitRef = db.collection("habits").doc(habitId);
+  const entryRef = habitRef.collection("entries").doc(date);
+
+  await db.runTransaction(async (tx) => {
+    const habitSnap = await tx.get(habitRef);
+    if (!habitSnap.exists) {
+      throw new HttpsError("not-found", "Habit not found.");
+    }
+    const participantIds = (habitSnap.get("participantIds") ?? []) as string[];
+    if (!participantIds.includes(uid)) {
+      throw new HttpsError("permission-denied", "Not your habit.");
+    }
+    const trackingType = habitSnap.get("trackingType");
+
+    const entrySnap = await tx.get(entryRef);
+    const raw = (entrySnap.exists ? entrySnap.get("checks") : null) ?? {};
+    const checks: Record<string, number> = {};
+    for (const [k, v] of Object.entries(raw)) {
+      // Tolerate the legacy boolean form (`true` → 1).
+      const n = typeof v === "number" ? v : v === true ? 1 : 0;
+      if (n > 0) checks[k] = n;
+    }
+
+    if (value > 0) {
+      checks[uid] = value;
+    } else {
+      delete checks[uid];
+    }
+
+    const amounts = participantIds.map((p) => checks[p] ?? 0);
+    const allLogged = amounts.every((a) => a > 0);
+    const sum = amounts.reduce((s, a) => s + a, 0);
+    const groupValue = !allLogged ? 0 : trackingType === "quantity" ? sum : 1;
+
+    tx.set(entryRef, {
+      checks,
+      value: groupValue,
+      loggedBy: uid,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+  });
+
+  return {ok: true};
+});

@@ -12,6 +12,11 @@ import 'participant_avatars.dart';
 class HabitCardContent extends ConsumerWidget {
   final Habit habit;
   final double todayValue;
+
+  /// For "Everyone" habits: how many of the participants have checked in today.
+  /// Null for personal / Anyone habits.
+  final ({int checked, int total})? togetherProgress;
+
   final VoidCallback onTap;
   final VoidCallback onQuickLog;
   final void Function(DateTime date, double currentValue) onCellTap;
@@ -20,6 +25,7 @@ class HabitCardContent extends ConsumerWidget {
     super.key,
     required this.habit,
     required this.todayValue,
+    this.togetherProgress,
     required this.onTap,
     required this.onQuickLog,
     required this.onCellTap,
@@ -64,6 +70,15 @@ class HabitCardContent extends ConsumerWidget {
                               size: 22,
                             ),
                           ],
+                          // For "Everyone" habits, how many have checked in today.
+                          if (togetherProgress != null) ...[
+                            const SizedBox(width: 8),
+                            _ProgressPill(
+                              checked: togetherProgress!.checked,
+                              total: togetherProgress!.total,
+                              color: color,
+                            ),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 3),
@@ -87,6 +102,41 @@ class HabitCardContent extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// "checked/total" pill for an Everyone habit's daily progress. Tinted the
+/// habit color once everyone is in.
+class _ProgressPill extends StatelessWidget {
+  final int checked;
+  final int total;
+  final HabitColor color;
+
+  const _ProgressPill({
+    required this.checked,
+    required this.total,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = EmberPalette.of(context);
+    final complete = total > 0 && checked >= total;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: complete ? color.base.withValues(alpha: 0.16) : palette.field,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: complete ? color.base.withValues(alpha: 0.4) : palette.border,
+        ),
+      ),
+      child: Text(
+        '$checked/$total',
+        style: EmberText.mono(10, color: complete ? color.base : palette.dim),
       ),
     );
   }

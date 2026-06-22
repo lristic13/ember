@@ -30,3 +30,13 @@ Stream<List<Habit>> sharedHabits(Ref ref) {
 Stream<Map<DateTime, double>> sharedHabitEntries(Ref ref, String habitId) {
   return ref.watch(sharedHabitRepositoryProvider).watchSharedEntries(habitId);
 }
+
+/// For an "Everyone" habit: per date, each participant's logged amount, live.
+/// Drives the per-user log button + "x/y logged" progress on the card.
+@riverpod
+Stream<Map<DateTime, Map<String, double>>> sharedHabitChecks(
+  Ref ref,
+  String habitId,
+) {
+  return ref.watch(sharedHabitRepositoryProvider).watchChecks(habitId);
+}

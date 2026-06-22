@@ -1,5 +1,6 @@
 import '../../../../core/constants/habit_gradient_presets.dart';
 import '../../../../core/constants/habit_gradients.dart';
+import 'completion_mode.dart';
 import 'habit_participant.dart';
 import 'tracking_type.dart';
 
@@ -23,6 +24,10 @@ class Habit {
   /// Members of a shared habit (includes the owner). Empty for personal.
   final List<HabitParticipant> participants;
 
+  /// Completion rule for shared habits. Ignored for personal habits (always
+  /// effectively [HabitCompletionMode.any]).
+  final HabitCompletionMode completionMode;
+
   const Habit({
     required this.id,
     required this.name,
@@ -34,6 +39,7 @@ class Habit {
     this.isArchived = false,
     this.ownerId,
     this.participants = const [],
+    this.completionMode = HabitCompletionMode.any,
   });
 
   /// Whether this activity tracks quantities.
@@ -44,6 +50,10 @@ class Habit {
 
   /// Whether this is a shared (cloud) habit rather than a personal local one.
   bool get isShared => ownerId != null;
+
+  /// A shared habit that requires every participant to check in ("Together").
+  bool get isTogether =>
+      isShared && completionMode == HabitCompletionMode.all;
 
   /// Get the HabitGradient for this habit.
   HabitGradient get gradient => HabitGradientPresets.getById(gradientId);
@@ -59,6 +69,7 @@ class Habit {
     bool? isArchived,
     String? ownerId,
     List<HabitParticipant>? participants,
+    HabitCompletionMode? completionMode,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -71,6 +82,7 @@ class Habit {
       isArchived: isArchived ?? this.isArchived,
       ownerId: ownerId ?? this.ownerId,
       participants: participants ?? this.participants,
+      completionMode: completionMode ?? this.completionMode,
     );
   }
 
@@ -96,6 +108,7 @@ class Habit {
           createdAt == other.createdAt &&
           isArchived == other.isArchived &&
           ownerId == other.ownerId &&
+          completionMode == other.completionMode &&
           _sameParticipants(other.participants);
 
   @override
@@ -109,6 +122,7 @@ class Habit {
       createdAt.hashCode ^
       isArchived.hashCode ^
       ownerId.hashCode ^
+      completionMode.hashCode ^
       Object.hashAll(participants);
 
   @override

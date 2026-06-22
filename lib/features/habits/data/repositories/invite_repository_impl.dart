@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart' show FirebaseFunctionsExce
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/result.dart';
+import '../../domain/entities/habit_participant.dart';
 import '../../domain/entities/invite.dart';
 import '../../domain/repositories/invite_repository.dart';
 import '../datasources/invite_remote_datasource.dart';
@@ -25,6 +26,17 @@ class InviteRepositoryImpl implements InviteRepository {
       return Success(await _datasource.lookupHandle(handleLower));
     } catch (e) {
       return Err(NetworkFailure('Lookup failed: $e'));
+    }
+  }
+
+  @override
+  Future<Result<List<HabitParticipant>, Failure>> searchUsers(
+    String prefix,
+  ) async {
+    try {
+      return Success(await _datasource.searchUsers(prefix));
+    } catch (e) {
+      return Err(NetworkFailure('Search failed: $e'));
     }
   }
 

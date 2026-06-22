@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +20,7 @@ class SignInScreen extends ConsumerWidget {
     final viewModel = ref.read(signInViewModelProvider.notifier);
 
     final googleLoading = state.loading == AuthProviderKind.google;
+    final appleLoading = state.loading == AuthProviderKind.apple;
 
     return Scaffold(
       backgroundColor: palette.bg,
@@ -75,8 +78,17 @@ class SignInScreen extends ConsumerWidget {
                 SignInErrorCard(message: state.error),
                 const SizedBox(height: 11),
               ],
-              // Apple sign-in temporarily removed — re-add AuthButton.apple
-              // here once the Services ID / Xcode capability setup is done.
+              // Apple HIG: offer Sign in with Apple at least as prominently as
+              // other options. iOS-only — Android would need the web OAuth flow
+              // (Services ID + key), which we don't configure.
+              if (Platform.isIOS) ...[
+                AuthButton.apple(
+                  label: 'Continue with Apple',
+                  loading: appleLoading,
+                  onPressed: viewModel.signInWithApple,
+                ),
+                const SizedBox(height: 12),
+              ],
               AuthButton.google(
                 label: 'Continue with Google',
                 loading: googleLoading,

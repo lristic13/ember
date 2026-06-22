@@ -67,6 +67,7 @@ class SharedHabitRemoteDatasource {
       'trackingType': habit.trackingType.name,
       'unit': habit.unit,
       'gradientId': habit.gradientId,
+      'completionMode': habit.completionMode.name,
       'ownerId': ownerUid,
       'participantIds': [ownerUid],
       'participants': {
@@ -122,6 +123,7 @@ class SharedHabitRemoteDatasource {
     String? unit,
     String? emoji,
     required String gradientId,
+    required String completionMode,
   }) async {
     await _functions.httpsCallable('updateSharedHabit').call(<String, dynamic>{
       'habitId': habitId,
@@ -130,7 +132,48 @@ class SharedHabitRemoteDatasource {
       'unit': unit,
       'emoji': emoji,
       'gradientId': gradientId,
+      'completionMode': completionMode,
     });
+  }
+
+  /// Sets the caller's own contribution for [date] on an "Everyone" habit
+  /// ([value] 1 for a check-in, the amount for quantity, 0 to clear).
+  Future<void> setTogetherEntry({
+    required String habitId,
+    required DateTime date,
+    required double value,
+  }) async {
+    await _functions.httpsCallable('setTogetherEntry').call(<String, dynamic>{
+      'habitId': habitId,
+      'date': _docId(date),
+      'value': value,
+    });
+  }
+
+  /// Streams, per date, each participant's logged amount (Everyone mode). A uid
+  /// with amount > 0 has logged that day. Only dates with a `checks` map appear.
+  Stream<Map<DateTime, Map<String, double>>> watchChecks(String habitId) {
+    return _db
+        .collection('habits')
+        .doc(habitId)
+        .collection('entries')
+        .snapshots()
+        .map((snap) {
+          final map = <DateTime, Map<String, double>>{};
+          for (final doc in snap.docs) {
+            final date = DateTime.tryParse(doc.id);
+            final raw = doc.data()['checks'];
+            if (date == null || raw is! Map) continue;
+            final amounts = <String, double>{};
+            raw.forEach((k, v) {
+              // Tolerate the legacy boolean form (`true` → 1).
+              final n = v is num ? v.toDouble() : (v == true ? 1.0 : 0.0);
+              if (n > 0) amounts[k as String] = n;
+            });
+            map[DateTime(date.year, date.month, date.day)] = amounts;
+          }
+          return map;
+        });
   }
 
   String _docId(DateTime date) =>

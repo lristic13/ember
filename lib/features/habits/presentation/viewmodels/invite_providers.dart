@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../auth/presentation/viewmodels/auth_providers.dart';
 import '../../data/datasources/invite_remote_datasource.dart';
 import '../../data/repositories/invite_repository_impl.dart';
+import '../../domain/entities/habit_participant.dart';
 import '../../domain/entities/invite.dart';
 import '../../domain/repositories/invite_repository.dart';
 
@@ -35,4 +36,13 @@ Stream<List<Invite>> habitInvites(Ref ref, String habitId) {
   final uid = ref.watch(currentUserProvider)?.uid;
   if (uid == null) return Stream.value(const []);
   return ref.watch(inviteRepositoryProvider).watchHabitInvites(habitId, uid);
+}
+
+/// Users matching [query] by handle prefix (for invite search). The caller is
+/// responsible for debouncing what it passes in. Empty for blank queries.
+@riverpod
+Future<List<HabitParticipant>> userSearch(Ref ref, String query) async {
+  if (query.trim().isEmpty) return const [];
+  final result = await ref.watch(inviteRepositoryProvider).searchUsers(query);
+  return result.valueOrNull ?? const [];
 }

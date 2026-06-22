@@ -48,12 +48,20 @@ Future<Map<DateTime, double>> allHabitEntries(Ref ref, String habitId) async {
 @riverpod
 class HabitEntriesViewModel extends _$HabitEntriesViewModel {
   bool _isShared = false;
+  bool _isTogether = false;
 
   @override
   HabitEntriesState build(String habitId) {
     _isShared = ref.watch(
       sharedHabitsProvider.select(
         (async) => async.asData?.value.any((h) => h.id == habitId) ?? false,
+      ),
+    );
+    _isTogether = ref.watch(
+      sharedHabitsProvider.select(
+        (async) =>
+            (async.asData?.value ?? const [])
+                .any((h) => h.id == habitId && h.isTogether),
       ),
     );
 
@@ -122,8 +130,23 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
   }
 
   /// Logs an entry for a specific date with the given value.
+  ///
+  /// For "Everyone" habits this is the caller's *own* contribution (1 for a
+  /// check-in, the amount for quantity, 0 to clear) — the day only completes
+  /// once everyone has logged.
   Future<bool> logEntry(DateTime date, double value) async {
     final normalizedDate = DateTime(date.year, date.month, date.day);
+
+    if (_isTogether) {
+      final result = await ref
+          .read(sharedHabitRepositoryProvider)
+          .setTogetherEntry(
+            habitId: habitId,
+            date: normalizedDate,
+            value: value,
+          );
+      return result.fold((_) => false, (_) => true);
+    }
 
     if (_isShared) {
       // Shared logging: write to Firestore (last-write-wins). The live stream
@@ -182,7 +205,9 @@ class HabitEntriesViewModel extends _$HabitEntriesViewModel {
     return logEntry(today, currentValue + 1);
   }
 
-  /// Toggles today's completion status (for completion tracking).
+  /// Toggles today's completion status (for completion tracking). For "Everyone"
+  /// habits the caller passes the desired value via [logEntry] instead (it knows
+  /// the caller's own check state), so this stays the personal/Anyone path.
   Future<bool> toggleTodayCompletion() async {
     final today = DateUtils.dateOnly(DateTime.now());
     final currentValue = _getCurrentValueForDate(today);

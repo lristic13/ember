@@ -1,5 +1,6 @@
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/result.dart';
+import '../entities/habit_participant.dart';
 import '../entities/invite.dart';
 
 /// Access to collaboration invites. Reads stream live from Firestore; mutations
@@ -13,6 +14,9 @@ abstract class InviteRepository {
 
   /// Resolves an `@handle` to its owner's uid, or `null` if nobody owns it.
   Future<Result<String?, Failure>> resolveHandle(String handleLower);
+
+  /// Users whose handle starts with [prefix] (for invite search).
+  Future<Result<List<HabitParticipant>, Failure>> searchUsers(String prefix);
 
   /// Sends an invite to [toHandle] for the (already shared) habit [habitId].
   Future<Result<void, Failure>> sendInvite({

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../../core/constants/firebase_constants.dart';
+import '../../domain/entities/habit_participant.dart';
 import '../../domain/entities/invite.dart';
 import '../models/invite_model.dart';
 
@@ -59,6 +60,28 @@ class InviteRemoteDatasource {
   Future<String?> lookupHandle(String handleLower) async {
     final snap = await _db.collection('handles').doc(handleLower).get();
     return snap.exists ? snap.get('uid') as String? : null;
+  }
+
+  /// Users whose handle starts with [prefix] (case-insensitive), for invite
+  /// search. Capped to a handful of results.
+  Future<List<HabitParticipant>> searchUsers(String prefix) async {
+    final q = prefix.trim().toLowerCase();
+    if (q.isEmpty) return const [];
+    final snap = await _db
+        .collection('users')
+        .where('handleLower', isGreaterThanOrEqualTo: q)
+        .where('handleLower', isLessThan: '$q')
+        .orderBy('handleLower')
+        .limit(8)
+        .get();
+    return snap.docs.map((d) {
+      final data = d.data();
+      return HabitParticipant(
+        uid: d.id,
+        handle: data['handle'] as String?,
+        displayName: data['displayName'] as String?,
+      );
+    }).toList();
   }
 
   Future<void> sendInvite({

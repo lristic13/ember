@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../domain/entities/completion_mode.dart';
 import '../../domain/entities/habit.dart';
 import '../../domain/entities/habit_participant.dart';
 import '../../domain/entities/tracking_type.dart';
@@ -33,6 +34,7 @@ Habit sharedHabitFromDoc(String id, Map<String, dynamic> data) {
     createdAt: ts is Timestamp ? ts.toDate() : DateTime.now(),
     ownerId: ownerId,
     participants: participants,
+    completionMode: _completionMode(data['completionMode'] as String?),
   );
 }
 
@@ -40,3 +42,9 @@ TrackingType _trackingType(String? raw) => TrackingType.values.firstWhere(
   (t) => t.name == raw,
   orElse: () => TrackingType.completion,
 );
+
+HabitCompletionMode _completionMode(String? raw) =>
+    HabitCompletionMode.values.firstWhere(
+      (m) => m.name == raw,
+      orElse: () => HabitCompletionMode.any,
+    );

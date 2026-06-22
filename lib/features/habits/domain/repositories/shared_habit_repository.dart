@@ -1,5 +1,6 @@
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/result.dart';
+import '../entities/completion_mode.dart';
 import '../entities/habit.dart';
 import '../entities/tracking_type.dart';
 
@@ -12,12 +13,32 @@ abstract class SharedHabitRepository {
   /// A shared habit's entries as date→value.
   Stream<Map<DateTime, double>> watchSharedEntries(String habitId);
 
+  /// For an "Everyone" habit: per date, each participant's logged amount.
+  Stream<Map<DateTime, Map<String, double>>> watchChecks(String habitId);
+
+  /// Sets the current user's own contribution for [date] on an "Everyone" habit
+  /// ([value] 1 for a check-in, the amount for quantity, 0 to clear).
+  Future<Result<void, Failure>> setTogetherEntry({
+    required String habitId,
+    required DateTime date,
+    required double value,
+  });
+
   /// Logs an entry on a shared habit (last-write-wins).
   Future<Result<void, Failure>> logEntry({
     required String habitId,
     required DateTime date,
     required double value,
     required String loggedBy,
+  });
+
+  /// Creates a brand-new shared habit (no history) owned by [ownerUid] with the
+  /// habit's [Habit.completionMode]. Used by the create flow's Everyone/Anyone.
+  Future<Result<void, Failure>> createSharedHabit({
+    required Habit habit,
+    required String ownerUid,
+    String? ownerHandle,
+    String? ownerDisplayName,
   });
 
   /// Promotes a personal habit into a shared cloud habit owned by [ownerUid],
@@ -43,7 +64,8 @@ abstract class SharedHabitRepository {
   /// Owner deletes a shared habit for everyone (entries + invites included).
   Future<Result<void, Failure>> deleteSharedHabit(String habitId);
 
-  /// Owner edits a shared habit's metadata (name, emoji, gradient, unit, type).
+  /// Owner edits a shared habit's metadata (name, emoji, gradient, unit, type,
+  /// completion mode).
   Future<Result<void, Failure>> updateSharedHabit({
     required String habitId,
     required String name,
@@ -51,5 +73,6 @@ abstract class SharedHabitRepository {
     String? unit,
     String? emoji,
     required String gradientId,
+    required HabitCompletionMode completionMode,
   });
 }

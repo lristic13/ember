@@ -9,11 +9,19 @@ class ParticipantAvatars extends StatelessWidget {
   final List<HabitParticipant> participants;
   final double size;
 
+  /// When set, participants in this set are drawn at full opacity (logged) and
+  /// the rest dimmed (not yet logged). Null = everyone at full opacity.
+  final Set<String>? loggedUids;
+
   const ParticipantAvatars({
     super.key,
     required this.participants,
     this.size = 28,
+    this.loggedUids,
   });
+
+  double _opacityFor(String uid) =>
+      (loggedUids == null || loggedUids!.contains(uid)) ? 1.0 : 0.32;
 
   @override
   Widget build(BuildContext context) {
@@ -30,28 +38,8 @@ class ParticipantAvatars extends StatelessWidget {
       height: size,
       child: Stack(
         children: [
-          for (var i = 0; i < shown.length; i++)
-            Positioned(
-              left: i * step,
-              child: Container(
-                width: size,
-                height: size,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: EmberGradients.accent155,
-                  border: Border.all(color: palette.card, width: 2),
-                ),
-                child: Text(
-                  shown[i].initials,
-                  style: EmberText.display(
-                    size * 0.34,
-                    color: Colors.white,
-                    letterSpacingEm: -0.02,
-                  ),
-                ),
-              ),
-            ),
+          // Painted back-to-front: the "+N" chip first, then avatars from last
+          // to first — so the first participant ends up on top.
           if (extra > 0)
             Positioned(
               left: shown.length * step,
@@ -67,6 +55,31 @@ class ParticipantAvatars extends StatelessWidget {
                 child: Text(
                   '+$extra',
                   style: EmberText.display(size * 0.3, color: palette.dim),
+                ),
+              ),
+            ),
+          for (var i = shown.length - 1; i >= 0; i--)
+            Positioned(
+              left: i * step,
+              child: Opacity(
+                opacity: _opacityFor(shown[i].uid),
+                child: Container(
+                  width: size,
+                  height: size,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: EmberGradients.accent155,
+                    border: Border.all(color: palette.card, width: 2),
+                  ),
+                  child: Text(
+                    shown[i].initials,
+                    style: EmberText.display(
+                      size * 0.34,
+                      color: Colors.white,
+                      letterSpacingEm: -0.02,
+                    ),
+                  ),
                 ),
               ),
             ),

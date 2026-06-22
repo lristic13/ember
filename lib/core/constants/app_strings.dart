@@ -8,6 +8,17 @@ abstract class AppStrings {
   static const String settings = 'Settings';
   static const String activities = 'Activities';
 
+  // Habit types (create flow)
+  static const String chooseHabitType = 'New habit';
+  static const String typePersonal = 'Personal';
+  static const String typePersonalDesc = 'Just for you.';
+  static const String typeEveryone = 'Everyone';
+  static const String typeEveryoneDesc =
+      'Everyone checks in — done only when the whole group is.';
+  static const String typeAnyone = 'Anyone';
+  static const String typeAnyoneDesc =
+      'Anyone can log it. One check counts for everyone.';
+
   // Activities
   static const String createActivity = 'Create Activity';
   static const String editActivity = 'Edit Activity';

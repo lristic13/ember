@@ -13,7 +13,8 @@ import '../heatmap/month_heatmap.dart';
 import 'details_stats_row.dart';
 import 'details_streak_hero.dart';
 import 'habit_details_header.dart';
-import 'shared_members_section.dart';
+import 'member_contributions_section.dart';
+import 'shared_habit_danger_action.dart';
 import 'view_year_button.dart';
 
 class HabitDetailsContent extends ConsumerWidget {
@@ -126,9 +127,13 @@ class HabitDetailsContent extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ViewYearButton(habitId: habit.id, color: color.base),
+          if (habit.isTogether) ...[
+            const SizedBox(height: 16),
+            MemberContributionsSection(habit: habit),
+          ],
           if (habit.isShared) ...[
             const SizedBox(height: 16),
-            SharedMembersSection(habit: habit),
+            SharedHabitDangerAction(habit: habit),
           ],
         ],
       ),

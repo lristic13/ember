@@ -81,6 +81,8 @@ class _EntryEditorBottomSheetState
       setState(() => _isSaving = false);
       if (success) {
         Navigator.of(context).pop(true);
+      } else {
+        _showSaveError();
       }
     }
   }
@@ -98,8 +100,16 @@ class _EntryEditorBottomSheetState
       setState(() => _isSaving = false);
       if (success) {
         Navigator.of(context).pop(true);
+      } else {
+        _showSaveError();
       }
     }
+  }
+
+  void _showSaveError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Couldn't save — please try again.")),
+    );
   }
 
   Future<void> _clear() async {
@@ -114,6 +124,8 @@ class _EntryEditorBottomSheetState
       setState(() => _isSaving = false);
       if (success) {
         Navigator.of(context).pop(true);
+      } else {
+        _showSaveError();
       }
     }
   }
